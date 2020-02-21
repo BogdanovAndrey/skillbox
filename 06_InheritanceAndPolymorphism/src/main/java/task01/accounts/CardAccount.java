@@ -19,7 +19,7 @@ public class CardAccount extends GeneralAccount {
         double commission = moneyAmount / ( 100.0 + withdrawCommission);
         System.out.println("\tWithdrawn: " + (moneyAmount - commission) + " " + getCurrency());
         System.out.println("\tCommission: " + commission + " " + getCurrency());
-        System.out.println("\tMoney available: " + this.moneyAmount + " " + getCurrency());
+        System.out.println("\tMoney available: " + getMoneyAmount() + " " + getCurrency());
 
     }
 

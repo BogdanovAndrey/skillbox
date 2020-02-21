@@ -1,20 +1,18 @@
 package task01.accounts;
 
-import java.time.LocalDateTime;
 import java.util.Currency;
 
 public class GeneralAccount {
-    static final String NOT_ENOUGH_MONEY = "Not enough money on your account";
-    static int totalAccountNumber;
-    protected int accountNumber;
-    private LocalDateTime dateOfCreation;
-    protected double moneyAmount;
-    protected Currency currency;
+    private static final String NOT_ENOUGH_MONEY = "Not enough money on your account";
+    private static int totalAccountNumber;
+    private int accountNumber;
 
-    protected GeneralAccount (double moneyAmount, String currencyCode){
+    private double moneyAmount;
+    private Currency currency;
+
+    GeneralAccount(double moneyAmount, String currencyCode) {
         totalAccountNumber++;
         accountNumber = totalAccountNumber;
-        dateOfCreation = LocalDateTime.now();
         this.moneyAmount = moneyAmount ;
         this.currency = Currency.getInstance(currencyCode);
     }
@@ -33,10 +31,6 @@ public class GeneralAccount {
 
     public static int getTotalAccountNumber() {
         return totalAccountNumber;
-    }
-
-    public LocalDateTime getDateOfCreation() {
-        return dateOfCreation;
     }
 
     public void addMoney(double moneyAmount) {
