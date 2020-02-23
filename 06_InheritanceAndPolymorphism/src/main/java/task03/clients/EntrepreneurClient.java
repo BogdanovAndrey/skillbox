@@ -1,23 +1,19 @@
 package task03.clients;
 
 public class EntrepreneurClient extends Client {
-    final private double commission = 0.01;
-    final private int commissionBorder = 1000;
+    final private double COMMISSION = 0.01;
+    final private int COMMISSION_BORDER = 1000;
 
     public EntrepreneurClient(double moneyAmount) {
         super(moneyAmount);
     }
 
-    public double getCommission() {
-        return commission;
-    }
-
     @Override
     public void addMoney(double moneyAmount) {
-        if (moneyAmount < commissionBorder) {
-            super.addMoney(moneyAmount * (1 - commission));
+        if (moneyAmount < COMMISSION_BORDER) {
+            super.addMoney(moneyAmount * (1 - COMMISSION));
         } else {
-            super.addMoney(moneyAmount * (1 - commission / 2));
+            super.addMoney(moneyAmount * (1 - COMMISSION / 2));
         }
     }
 }

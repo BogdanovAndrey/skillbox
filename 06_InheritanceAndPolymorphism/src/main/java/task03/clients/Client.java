@@ -16,14 +16,10 @@ abstract public class Client {
     }
 
     public void withdrawMoney(double moneyAmount) {
-        if (checkMoneyAmount(moneyAmount)) {
+        if (this.moneyAmount >= moneyAmount) {
             this.moneyAmount -= moneyAmount;
         } else {
             System.out.println("Not enough money");
         }
-    }
-
-    protected boolean checkMoneyAmount(double moneyAmount) {
-        return this.moneyAmount >= moneyAmount;
     }
 }

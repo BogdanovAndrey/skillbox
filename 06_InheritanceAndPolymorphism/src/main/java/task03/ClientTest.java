@@ -6,7 +6,7 @@ import task03.clients.EntrepreneurClient;
 import task03.clients.IndividualClient;
 
 import java.util.ArrayList;
-
+import java.util.HashSet;
 
 
 public class ClientTest {
@@ -27,8 +27,6 @@ public class ClientTest {
             System.out.println("Money on bank account after adding 2000 RUB: " + client.getMoneyAmount());
             client.withdrawMoney(1000);
             System.out.println("Money on bank account after withdrawing 1000 RUB: " + client.getMoneyAmount() + "\n");
-
-
         }
     }
 }
