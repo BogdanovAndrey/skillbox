@@ -23,7 +23,7 @@ public class Company {
 
     public void hireAll(List<BaseEmployee> newbieList) {
         stuff.addAll(newbieList);
-        //Collections.sort(stuff);
+        Collections.sort(stuff);
     }
 
     public boolean fire(BaseEmployee emp) {
@@ -38,9 +38,10 @@ public class Company {
         if (count > stuff.size()) {
             System.out.println("В компании меньше сотрудников, чем Вы запросили. " +
                     "Вывод ограничен актуальным числом сотрудников");
+            count = stuff.size();
         }
-        return stuff.subList(stuff.size() - count, stuff.size());
 
+        return stuff.subList(0, count);
     }
 
     public List<BaseEmployee> getLowestSalaryStaff(int count) {
@@ -48,8 +49,9 @@ public class Company {
         if (count > stuff.size()) {
             System.out.println("В компании меньше сотрудников, чем Вы запросили. " +
                     "Вывод ограничен актуальным числом сотрудников");
+            count = stuff.size();
         }
-        return stuff.subList(0, count);
+        return stuff.subList(stuff.size() - count, stuff.size());
     }
 
     public List<BaseEmployee> getStuff() {

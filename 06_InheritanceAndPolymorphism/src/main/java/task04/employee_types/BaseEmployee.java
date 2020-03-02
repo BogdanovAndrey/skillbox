@@ -7,7 +7,7 @@ abstract public class BaseEmployee implements Employee, Comparable<BaseEmployee>
     Company company;
     private String name;
 
-    public BaseEmployee(Company company, String name, double baseSalary) {
+    BaseEmployee(Company company, String name, double baseSalary) {
         this.company = company;
         this.name = name;
         salary = baseSalary;
@@ -24,6 +24,6 @@ abstract public class BaseEmployee implements Employee, Comparable<BaseEmployee>
 
     @Override
     public int compareTo(BaseEmployee o) {
-        return Double.compare(this.getMonthSalary(), o.getMonthSalary());
+        return Double.compare(o.getMonthSalary(), this.getMonthSalary());
     }
 }
