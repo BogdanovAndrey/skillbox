@@ -1,7 +1,7 @@
 package task04;
 
 import task04.company.Company;
-import task04.employee_types.BaseEmployee;
+import task04.employee_types.Employee;
 import task04.employee_types.Manager;
 import task04.employee_types.Operator;
 import task04.employee_types.TopManager;
@@ -25,7 +25,7 @@ public class CompanyActions {
 
         //Создаем компанию
         Company firstCompany = new Company();
-        ArrayList<BaseEmployee> employees = new ArrayList<>();
+        ArrayList<Employee> employees = new ArrayList<>();
 
         //Готовим список операторов для найма
         for (int i = 0; i < OPERATOR_COUNT; i++) {
@@ -42,8 +42,9 @@ public class CompanyActions {
         for (int i = 0; i < TOP_MANAGER_COUNT; i++) {
             firstCompany.hire(new TopManager(firstCompany, "Top Manager " + i, getSalary(TOP_MANAGER_DELTA_SALARY)));
         }
+        System.out.println(">>>>>>>>>>>>>>>>>>>" + firstCompany.getManagerCount());
 
-        //Печатаем зарпалты
+        //Печатаем зарплаты
         printTopSalary(firstCompany, 15);
         printLowSalary(firstCompany, 30);
 
@@ -63,7 +64,7 @@ public class CompanyActions {
 
     private static void printTopSalary(Company company, int count) {
         System.out.println(count + " высоких зарплат в комании");
-        for (BaseEmployee emp : company.getTopSalaryStaff(count)
+        for (Employee emp : company.getTopSalaryStaff(count)
         ) {
             System.out.println(emp.getName() + ": " + (int) emp.getMonthSalary());
         }
@@ -71,8 +72,8 @@ public class CompanyActions {
     }
 
     private static void printLowSalary(Company company, int count) {
-        System.out.println(count + " низких зарплат в комании");
-        for (BaseEmployee emp : company.getLowestSalaryStaff(count)
+        System.out.println(count + " низких зарплат в компании");
+        for (Employee emp : company.getLowestSalaryStaff(count)
         ) {
             System.out.println(emp.getName() + ": " + (int) emp.getMonthSalary());
         }

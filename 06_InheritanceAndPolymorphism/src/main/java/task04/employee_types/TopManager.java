@@ -2,12 +2,23 @@ package task04.employee_types;
 
 import task04.company.Company;
 
-public class TopManager extends BaseEmployee {
+public class TopManager implements Employee {
     final private double BONUS = 1.50;
     final private int MINIMAL_INCOME = 10000000;
 
+    double salary;
+    Company company;
+    String name;
+
     public TopManager(Company company, String name, double baseSalary) {
-        super(company, name, baseSalary);
+        this.salary = baseSalary;
+        this.company = company;
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
