@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Company {
     final int MAX_INCOME = 100000000;
+    private double monthIncome;
     private ArrayList<Employee> stuff = new ArrayList<>();
 
     public Company() {
@@ -17,23 +18,33 @@ public class Company {
 
     public void hire(Employee newbie) {
         stuff.add(newbie);
-        Collections.sort(stuff);
     }
 
     public void hireAll(List<Employee> newbieList) {
         stuff.addAll(newbieList);
-        Collections.sort(stuff);
     }
 
     public boolean fire(Employee emp) {
         return stuff.remove(emp);
     }
 
-    public int getIncome() {
-        return 0;
+    public void countMonthIncome() {
+        Manager man = new Manager(this, null, 0);
+        for (Employee emp : stuff
+        ) {
+            if (emp.getClass().isInstance(man)) {
+                monthIncome += ((Manager) emp).getSalesAmount();
+                ((Manager) emp).changePotential();
+            }
+        }
+    }
+
+    public double getMonthIncome() {
+        return monthIncome;
     }
 
     public List<Employee> getTopSalaryStaff(int count) {
+        Collections.sort(stuff);
         if (count > stuff.size()) {
             System.out.println("В компании меньше сотрудников, чем Вы запросили. " +
                     "Вывод ограничен актуальным числом сотрудников");
@@ -55,16 +66,5 @@ public class Company {
 
     public List<Employee> getStuff() {
         return stuff;
-    }
-
-    public int getManagerCount() {
-        int managerCount = 0;
-        for (Employee emp : stuff
-        ) {
-            if (emp.getClass().isInstance(new Manager(null, null, 0))) {
-                managerCount++;
-            }
-        }
-        return managerCount;
     }
 }

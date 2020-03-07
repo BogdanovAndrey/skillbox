@@ -23,6 +23,6 @@ public class TopManager implements Employee {
 
     @Override
     public double getMonthSalary() {
-        return salary + ((company.getIncome() > MINIMAL_INCOME) ? salary * BONUS : 0);
+        return salary + ((company.getMonthIncome() > MINIMAL_INCOME) ? salary * BONUS : 0);
     }
 }

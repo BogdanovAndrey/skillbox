@@ -13,9 +13,9 @@ public class CompanyActions {
     private final static int OPERATOR_COUNT = 180;
     private final static int MANAGER_COUNT = 80;
     private final static int TOP_MANAGER_COUNT = 10;
-    private final static int OPERATOR_DELTA_SALARY = 80000;
-    private final static int MANAGER_DELTA_SALARY = 180000;
-    private final static int TOP_MANAGER_DELTA_SALARY = 280000;
+    private final static int OPERATOR_DELTA_SALARY = 40000;
+    private final static int MANAGER_DELTA_SALARY = 80000;
+    private final static int TOP_MANAGER_DELTA_SALARY = 2800000;
     private final static int MIN_SALARY = 20000;
 
     public static void main(String[] args) {
@@ -25,37 +25,14 @@ public class CompanyActions {
 
         //Создаем компанию
         Company firstCompany = new Company();
-        ArrayList<Employee> employees = new ArrayList<>();
 
-        //Готовим список операторов для найма
-        for (int i = 0; i < OPERATOR_COUNT; i++) {
-            employees.add(new Operator(firstCompany, "Operator " + i, getSalary(OPERATOR_DELTA_SALARY)));
-        }
-        //Добавляем туда менеджеров
-        for (int i = 0; i < MANAGER_COUNT; i++) {
-            employees.add(new Manager(firstCompany, "Manager " + i, getSalary(MANAGER_DELTA_SALARY)));
-        }
-        //Нанимаем всех сразу
-        firstCompany.hireAll(employees);
+        createAndHireStuff(firstCompany);
 
-        //Нанимаем топ менеджеров напрямую
-        for (int i = 0; i < TOP_MANAGER_COUNT; i++) {
-            firstCompany.hire(new TopManager(firstCompany, "Top Manager " + i, getSalary(TOP_MANAGER_DELTA_SALARY)));
-        }
-        System.out.println(">>>>>>>>>>>>>>>>>>>" + firstCompany.getManagerCount());
+        printNewMonthReport(firstCompany);
 
-        //Печатаем зарплаты
-        printTopSalary(firstCompany, 15);
-        printLowSalary(firstCompany, 30);
+        decimateCompany(firstCompany);
 
-        //Уволим каждого второго сотрудника
-        for (int i = 0; i < firstCompany.getStuff().size(); i++) {
-            firstCompany.fire(firstCompany.getStuff().get(i + 1));
-        }
-
-        //Печатаем зарпалты
-        printTopSalary(firstCompany, 15);
-        printLowSalary(firstCompany, 30);
+        printNewMonthReport(firstCompany);
     }
 
     private static int getSalary(int deltaSalary) {
@@ -63,12 +40,13 @@ public class CompanyActions {
     }
 
     private static void printTopSalary(Company company, int count) {
-        System.out.println(count + " высоких зарплат в комании");
+        System.out.println(count + " высоких зарплат в компании");
         for (Employee emp : company.getTopSalaryStaff(count)
         ) {
             System.out.println(emp.getName() + ": " + (int) emp.getMonthSalary());
         }
         System.out.println();
+
     }
 
     private static void printLowSalary(Company company, int count) {
@@ -78,5 +56,40 @@ public class CompanyActions {
             System.out.println(emp.getName() + ": " + (int) emp.getMonthSalary());
         }
         System.out.println();
+    }
+
+    private static void createAndHireStuff(Company company) {
+        ArrayList<Employee> employees = new ArrayList<>();
+
+        //Готовим список операторов для найма
+        for (int i = 0; i < OPERATOR_COUNT; i++) {
+            employees.add(new Operator(company, "Operator " + i, getSalary(OPERATOR_DELTA_SALARY)));
+        }
+        //Добавляем туда менеджеров
+        for (int i = 0; i < MANAGER_COUNT; i++) {
+            employees.add(new Manager(company, "Manager " + i, getSalary(MANAGER_DELTA_SALARY)));
+        }
+        //Нанимаем всех сразу
+        company.hireAll(employees);
+
+        //Нанимаем топ менеджеров напрямую
+        for (int i = 0; i < TOP_MANAGER_COUNT; i++) {
+            company.hire(new TopManager(company, "Top Manager " + i, getSalary(TOP_MANAGER_DELTA_SALARY)));
+        }
+    }
+
+    private static void printNewMonthReport(Company company) {
+        company.countMonthIncome();
+        System.out.format("Компания заработала: %.2f руб.%n", company.getMonthIncome());
+
+        printTopSalary(company, 15);
+        printLowSalary(company, 30);
+    }
+
+    private static void decimateCompany(Company company) {
+        //Уволим каждого второго сотрудника
+        for (int i = 0; i < company.getStuff().size(); i++) {
+            company.fire(company.getStuff().get(i + 1));
+        }
     }
 }
