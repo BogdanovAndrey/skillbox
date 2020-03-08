@@ -3,8 +3,8 @@ package task04.employee_types;
 import task04.company.Company;
 
 public class TopManager implements Employee {
-    final private double BONUS = 1.50;
-    final private int MINIMAL_INCOME = 10000000;
+    final static private double BONUS = 1.50;
+    final static private int MINIMAL_INCOME = 10000000;
 
     double salary;
     Company company;

@@ -30,6 +30,7 @@ public class Company {
 
     public void countMonthIncome() {
         Manager man = new Manager(this, null, 0);
+        monthIncome = 0;
         for (Employee emp : stuff
         ) {
             if (emp.getClass().isInstance(man)) {
@@ -44,24 +45,23 @@ public class Company {
     }
 
     public List<Employee> getTopSalaryStaff(int count) {
-        Collections.sort(stuff);
-        if (count > stuff.size()) {
-            System.out.println("В компании меньше сотрудников, чем Вы запросили. " +
-                    "Вывод ограничен актуальным числом сотрудников");
-            count = stuff.size();
-        }
-
-        return stuff.subList(0, count);
+        return makeSalaryReport(stuff, 0, count);
     }
 
     public List<Employee> getLowestSalaryStaff(int count) {
+        return makeSalaryReport(stuff, stuff.size() - count, stuff.size());
+    }
+
+    //Подготовка отчета по зарплатам
+    private List<Employee> makeSalaryReport(List<Employee> stuff, int start, int end) {
         Collections.sort(stuff);
-        if (count > stuff.size()) {
+        if (start > end || start < 0 || end > stuff.size()) {
             System.out.println("В компании меньше сотрудников, чем Вы запросили. " +
                     "Вывод ограничен актуальным числом сотрудников");
-            count = stuff.size();
+            start = 0;
+            end = stuff.size();
         }
-        return stuff.subList(stuff.size() - count, stuff.size());
+        return stuff.subList(start, end);
     }
 
     public List<Employee> getStuff() {

@@ -33,6 +33,7 @@ public class CompanyActions {
         decimateCompany(firstCompany);
 
         printNewMonthReport(firstCompany);
+
     }
 
     private static int getSalary(int deltaSalary) {

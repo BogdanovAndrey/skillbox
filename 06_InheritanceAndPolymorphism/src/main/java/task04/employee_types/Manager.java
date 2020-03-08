@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class Manager implements Employee {
     final static private double BONUS = 0.05;
-    final static private int MAX_POTENTIAL = 1000;
+    final static private int MAX_POTENTIAL = 100;
     int potential;
     double salary;
     Company company;
