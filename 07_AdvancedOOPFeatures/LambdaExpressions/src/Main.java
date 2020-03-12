@@ -1,20 +1,27 @@
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main
 {
     private static String staffFile = "data/staff.txt";
     private static String dateFormat = "dd.MM.yyyy";
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         ArrayList<Employee> staff = loadStaffFromFile();
 
-
+        staff.sort((o1, o2) -> {
+            int result = o1.getSalary().compareTo(o2.getSalary());
+            if (result == 0) {
+                result = o1.getName().compareTo(o2.getName());
+            }
+            return result;
+        });
+        for (Employee emp : staff) {
+            System.out.println(emp.toString());
+        }
     }
 
     private static ArrayList<Employee> loadStaffFromFile()
