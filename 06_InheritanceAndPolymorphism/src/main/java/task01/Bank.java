@@ -4,8 +4,6 @@ import task01.accounts.CardAccount;
 import task01.accounts.DepositAccount;
 import task01.accounts.GeneralAccount;
 
-import java.time.format.DateTimeFormatter;
-
 public class Bank {
     public static void main(String[] args) {
 
@@ -23,8 +21,6 @@ public class Bank {
         firstDeposit.withdrawMoney(1000);
         System.out.println("\nWithdrawing money from first card account:");
         firstCard.withdrawMoney(10000);
-
-        System.out.println("\nSecond deposit account was created at " + secondDeposit.getDateOfCreation().format(DateTimeFormatter.ofPattern("YYYY/MM/dd HH:mm:ss")));
 
         secondCard.addMoney(5600.1);
         System.out.println("\nSecond card account has " + secondCard.getMoneyAmount() + " " + secondCard.getCurrency());
