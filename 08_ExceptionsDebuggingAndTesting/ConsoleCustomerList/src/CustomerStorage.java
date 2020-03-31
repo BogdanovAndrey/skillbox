@@ -16,12 +16,16 @@ public class CustomerStorage {
                     "add Василий Петров vasily.petrov@gmail.com +79215637722");
         }
         String name = components[0] + " " + components[1];
+        checkName(name);
         checkMail(components[2]);
         checkNumber(components[3]);
         storage.put(name, new Customer(name, components[3], components[2]));
     }
 
     public void listCustomers() {
+        if (storage.isEmpty()) {
+            throw new NullPointerException("List is empty");
+        }
         storage.values().forEach(System.out::println);
     }
 
@@ -48,6 +52,12 @@ public class CustomerStorage {
     private void checkMail(String mail) {
         if (!mail.matches("[\\w.]+@\\w+\\.[a-z]+")) {
             throw new IllegalArgumentException("Wrong email entry.");
+        }
+    }
+
+    private void checkName(String name) {
+        if (!name.matches("[А-Я][а-я]+\\s[А-Я][а-я]+")) {
+            throw new IllegalArgumentException("Wrong name entry.");
         }
     }
 }
