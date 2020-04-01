@@ -88,31 +88,35 @@ public class RouteCalculator
 
     private List<Station> getRouteWithOneConnection(Station from, Station to)
     {
-        if(from.getLine().equals(to.getLine())) {
+        if (from.getLine().equals(to.getLine())) {
             return null;
         }
+
+        //Ошибка оценки линии с тремя соединениями
 
         ArrayList<Station> route = new ArrayList<>();
 
         List<Station> fromLineStations = from.getLine().getStations();
         List<Station> toLineStations = to.getLine().getStations();
-        for(Station srcStation : fromLineStations)
-        {
-            for(Station dstStation : toLineStations)
-            {
-                if(isConnected(srcStation, dstStation))
+        for (Station srcStation : fromLineStations) {
+            for (Station dstStation : toLineStations) {
+                if (isConnected(srcStation, dstStation))
                 {
                     ArrayList<Station> way = new ArrayList<>();
                     way.addAll(getRouteOnTheLine(from, srcStation));
                     way.addAll(getRouteOnTheLine(dstStation, to));
-                    if(route.isEmpty() || route.size() > way.size())
-                    {
+                    if (route.isEmpty() || route.size() > way.size()) {
                         route.clear();
                         route.addAll(way);
                     }
                 }
             }
         }
+
+        if (route.isEmpty()) {
+            return null;
+        }
+
         return route;
     }
 
@@ -140,6 +144,7 @@ public class RouteCalculator
 
     private List<Station> getRouteWithTwoConnections(Station from, Station to)
     {
+        //Невозможно проверить условие
         if (from.getLine().equals(to.getLine())) {
             return null;
         }
