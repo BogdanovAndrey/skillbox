@@ -112,7 +112,7 @@ public class RouteCalculatorTest {
     }
 
     @Test
-    public void testCalculateDuration() {
+    public void testCalculateDuration() throws IllegalArgumentException {
 
 
         double testDuration = RouteCalculator.calculateDuration(routOneLine);
@@ -128,8 +128,12 @@ public class RouteCalculatorTest {
         Assert.assertEquals(expectedDuration, testDuration, 0.0);
 
 //Проверим пустой маршрут
-        Assert.assertEquals(RouteCalculator.calculateDuration(new ArrayList<Station>()), 0.0, 0.0);
-
+        try {
+            RouteCalculator.calculateDuration(new ArrayList<Station>());
+        } catch (Exception e) {
+            String firstWord = e.getMessage().split(" ")[0];
+            Assert.assertEquals("Маршрут", firstWord);
+        }
     }
 
 
