@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" monitorInterval="5">
+    <Properties>
+        <Property name="APP_LOG_ROOT">target</Property>
+    </Properties>
+    <Appenders>
+        <RollingFile name="mistypeLogger" fileName="${APP_LOG_ROOT}/mistype.log"
+                     filePattern="${APP_LOG_ROOT}/mistype-%d{yyyy-MM-dd}.log">
+            <ThresholdFilter level="error" onMatch="DENY" onMismatch="ACCEPT"/>
+
+            <PatternLayout>
+                <pattern>%d{yyy-MM-dd HH:mm:ss} [%t] %level %logger: %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="errorLogger" fileName="${APP_LOG_ROOT}/error.log"
+                     filePattern="${APP_LOG_ROOT}/error-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d{yyy-MM-dd HH:mm:ss} [%t] %level %logger: %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="infoLogger" fileName="${APP_LOG_ROOT}/info.log"
+                     filePattern="${APP_LOG_ROOT}/info-%d{yyyy-MM-dd}.log">
+            <ThresholdFilter level="warn" onMatch="DENY" onMismatch="ACCEPT"/>
+            <ThresholdFilter level="error" onMatch="DENY" onMismatch="ACCEPT"/>
+            <PatternLayout>
+                <pattern>%d{yyy-MM-dd HH:mm:ss} [%t] %level %logger: %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="trace">
+            <AppenderRef ref="infoLogger" level="info"/>
+            <AppenderRef ref="mistypeLogger" level="warn"/>
+            <AppenderRef ref="errorLogger" level="error"/>
+        </Root>
+    </Loggers>
+</Configuration>
