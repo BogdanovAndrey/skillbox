@@ -5,8 +5,9 @@
     </Properties>
     <Appenders>
         <RollingFile name="mistypeLogger" fileName="${APP_LOG_ROOT}/mistype.log"
-                     filePattern="${APP_LOG_ROOT}/error-%d{yyyy-MM-dd}.log">
-            <MarkerFilter marker="MISTYPE"/>
+                     filePattern="${APP_LOG_ROOT}/mistype-%d{yyyy-MM-dd}.log">
+            <ThresholdFilter level="error" onMatch="DENY" onMismatch="ACCEPT"/>
+
             <PatternLayout>
                 <pattern>%d{yyy-MM-dd HH:mm:ss} [%t] %level %logger: %msg%n</pattern>
             </PatternLayout>
@@ -17,7 +18,6 @@
 
         <RollingFile name="errorLogger" fileName="${APP_LOG_ROOT}/error.log"
                      filePattern="${APP_LOG_ROOT}/error-%d{yyyy-MM-dd}.log">
-            <MarkerFilter marker="THROWING"/>
             <PatternLayout>
                 <pattern>%d{yyy-MM-dd HH:mm:ss} [%t] %level %logger: %msg%n</pattern>
             </PatternLayout>
@@ -27,7 +27,8 @@
         </RollingFile>
         <RollingFile name="infoLogger" fileName="${APP_LOG_ROOT}/info.log"
                      filePattern="${APP_LOG_ROOT}/info-%d{yyyy-MM-dd}.log">
-            <MarkerFilter marker="ROUT"/>
+            <ThresholdFilter level="warn" onMatch="DENY" onMismatch="ACCEPT"/>
+            <ThresholdFilter level="error" onMatch="DENY" onMismatch="ACCEPT"/>
             <PatternLayout>
                 <pattern>%d{yyy-MM-dd HH:mm:ss} [%t] %level %logger: %msg%n</pattern>
             </PatternLayout>
@@ -37,11 +38,10 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="trace"/>
-        <Logger name="Main" level="info">
-            <AppenderRef ref="infoLogger"/>
-            <AppenderRef ref="mistypeLogger"/>
-            <AppenderRef ref="errorLogger"/>
-        </Logger>
+        <Root level="trace">
+            <AppenderRef ref="infoLogger" level="info"/>
+            <AppenderRef ref="mistypeLogger" level="warn"/>
+            <AppenderRef ref="errorLogger" level="error"/>
+        </Root>
     </Loggers>
 </Configuration>

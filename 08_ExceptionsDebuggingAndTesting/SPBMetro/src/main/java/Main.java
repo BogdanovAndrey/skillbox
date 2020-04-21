@@ -2,6 +2,8 @@ import core.Line;
 import core.Station;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,11 +20,13 @@ public class Main {
 
     private static StationIndex stationIndex;
 
-    private static final Logger logger = LogManager.getLogger(Main.class);
+    private static final Logger LOGGER = LogManager.getLogger(Main.class.getName());
+    private static final Marker MISTYPE_MARKER = MarkerManager.getMarker("MISTYPE");
+    private static final Marker INPUT_STATION_MARKER = MarkerManager.getMarker("STATION");
+    private static final Marker ROUT_MARKER = MarkerManager.getMarker("ROUT");
 
     public static void main(String[] args) {
         RouteCalculator calculator = getRouteCalculator();
-
         System.out.println("Программа расчёта маршрутов метрополитена Санкт-Петербурга\n");
         scanner = new Scanner(System.in);
         for (; ; ) {
@@ -31,19 +35,20 @@ public class Main {
                 Station to = takeStation("Введите станцию назначения:");
 
                 List<Station> route = calculator.getShortestRoute(from, to);
+
+                double duration = RouteCalculator.calculateDuration(route);
+
                 System.out.println("Маршрут:");
                 printRoute(route);
 
-                double duration = RouteCalculator.calculateDuration(route);
                 System.out.println("Длительность: " +
                         duration + " минут");
 
-                logger.info("Маршрут: " + route.toString() +
-                        "; длительность - " + duration);
+                LOGGER.info(ROUT_MARKER, "Маршрут: {}; длительность - {}", route.toString(), duration);
 
             } catch (Exception e) {
                 System.out.println("Введена одна станция. Проверьте свой маршрут.");
-                logger.error(e.getMessage());
+                LOGGER.throwing(e);
             }
         }
     }
@@ -75,11 +80,11 @@ public class Main {
             String line = scanner.nextLine().trim();
             Station station = stationIndex.getStation(line);
             if (station != null) {
-                logger.info("Введено - " + station.toString());
+                LOGGER.info("Введено - " + station.toString());
                 return station;
             }
             System.out.println("Станция не найдена :(");
-            logger.warn("Введено ошибочно - " + line);
+            LOGGER.info(MISTYPE_MARKER, "Введено ошибочно - {}", line);
 
         }
     }
@@ -100,7 +105,7 @@ public class Main {
             parseConnections(connectionsArray);
         } catch (Exception ex) {
             ex.printStackTrace();
-            logger.error(ex.getMessage());
+            LOGGER.throwing(ex);
         }
     }
 
@@ -156,10 +161,10 @@ public class Main {
         StringBuilder builder = new StringBuilder();
         try {
             List<String> lines = Files.readAllLines(Paths.get(dataFile));
-            lines.forEach(line -> builder.append(line));
+            lines.forEach(builder::append);
         } catch (Exception ex) {
             ex.printStackTrace();
-            logger.error(ex.getMessage());
+            LOGGER.throwing(ex);
         }
         return builder.toString();
     }
