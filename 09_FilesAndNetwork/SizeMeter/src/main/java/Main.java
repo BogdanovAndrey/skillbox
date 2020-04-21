@@ -1,20 +1,21 @@
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
-
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         for (; ; ) {
             try {
                 System.out.println("Введите путь для подсчета размера папки или файла:");
                 System.out.print(">> ");
-                File fl = new File(input.nextLine());
+                String checkPath = input.nextLine();
+                /*File fl = new File(checkPath);
                 if (fl.exists()) {
                     System.out.println("~идет подсчет~");
                     printResult(fl);
@@ -23,7 +24,23 @@ public class Main {
                 }
             } catch (FileNotFoundException e) {
                 System.out.println(e.getMessage());
+            }*/
+                System.out.println(sizeConverter(Files.walk(Path.of(checkPath))
+                        .filter(Files::isRegularFile)
+                        .mapToLong(path -> path.toFile().length())
+                        //.mapToLong(Main::trySize)
+                        .sum()));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
+    }
+
+    static long trySize(Path path) {
+        try {
+            return Files.size(path);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -35,17 +52,19 @@ public class Main {
         } else {
             output.append("файла ");
         }
-        long result = countSize(fl);
-        if (result < 1000) {
-            output.append(result).append(" байт");
-        } else if (result < 1000000) {
-            output.append(result / 1000).append(" кбайт");
-        } else if (result < 1000000000) {
-            output.append(result / 1000000).append(" Мбайт");
-        } else if (result < 1000000000000L) {
-            output.append(result / 1000000000).append(" Гбайт");
-        }
-        System.out.println(output.toString());
+        System.out.println(output.append(sizeConverter(countSize(fl))));
+
+    }
+
+    private static String sizeConverter(long size) {
+
+        if (size < 1024) return size + " Б";
+
+        int exp = (int) (Math.log(size) / (Math.log(1024)));
+
+        char unitsPrefix = "КМГТПЭ".charAt(exp - 1);
+
+        return String.format("%.2f %sБ", size / Math.pow(1024, exp), unitsPrefix);
 
     }
 
