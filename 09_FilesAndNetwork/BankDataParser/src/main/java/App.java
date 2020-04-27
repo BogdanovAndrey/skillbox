@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class App {
 
-    private static final String DATA_FILE_PATH = "../files/movementList.csv";
+    private static final String DATA_FILE_PATH = "data/movementList.csv";
     private static final int OPERATION_DATE_POZ = 3;
     private static final int REFERENCE_POZ = 4;
     private static final int DESCRIPTION_POZ = 5;
@@ -52,8 +52,8 @@ public class App {
         }
     }
 
-    static ArrayList<MoneyMovement> parseDataFile(String path) throws IOException {
-        List<String> rawData = Files.readAllLines(Paths.get(path).toAbsolutePath().normalize());
+    private static ArrayList<MoneyMovement> parseDataFile(String path) throws IOException {
+        List<String> rawData = Files.readAllLines(Paths.get(path));
         ArrayList<MoneyMovement> entry = new ArrayList<>();
         rawData.remove(0);
         for (String s : rawData
@@ -63,7 +63,7 @@ public class App {
         return entry;
     }
 
-    static MoneyMovement parseDataString(String data) {
+    private static MoneyMovement parseDataString(String data) {
         //Приведем дробные числа к нужному формату и уберем ковычки
         data = data.replaceAll(",(?=[0-9]+\")", ".").replaceAll("\"", "");
         //Разделям строку на части и обработаем их
@@ -78,23 +78,25 @@ public class App {
     }
 
 
-    static String parseDescription(String input) {
+    private static String parseDescription(String input) {
         input = input.replaceAll("\\s+/", "/");
-        String output = input.split("\\s{2,}")[1];
+        input = input.replaceAll("/", "\\\\");
+        String output = input.split("\\s{4,}")[1];
+        output = output.substring(output.lastIndexOf('\\') + 1).trim();
         return output;
     }
 
-    static void printResult(Map<MovementType, Map<String, Double>> map) {
+    private static void printResult(Map<MovementType, Map<String, Double>> map) {
         System.out.printf("Общий доход: %.2f рублей%n", getTotalMoneyAmount(map, MovementType.INCOME));
         System.out.printf("Общий расход: %.2f рублей%n", getTotalMoneyAmount(map, MovementType.OUTCOME));
         System.out.println("\nДетальная расшифровка расходов:");
-        System.out.printf("%-60s%-10s%n", "Описание платежа", "Сумма");
+        System.out.printf("%-40s%-10s%n", "Описание платежа", "Сумма");
         map.get(MovementType.OUTCOME).forEach((key, value) -> {
-            System.out.printf("%-60s%-10s рублей%n", key, value.toString());
+            System.out.printf("%-40s%-10s рублей%n", key, value.toString());
         });
     }
 
-    static double getTotalMoneyAmount(Map<MovementType, Map<String, Double>> map, MovementType type) {
+    private static double getTotalMoneyAmount(Map<MovementType, Map<String, Double>> map, MovementType type) {
         return map.get(type)
                 .values()
                 .stream()

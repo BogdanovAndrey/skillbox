@@ -1,6 +1,5 @@
 .DS_Store
 *.iml
-.idea
+.idea/
 out
 target
-*.xml
