@@ -3,17 +3,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
 import java.util.Scanner;
 
 
@@ -46,9 +42,8 @@ public class Saver {
     public static void copyLink(String dest, String baseName, String src) {
         try {
             if (src.contains("http")) {
-                if(!dest.endsWith("/"))
-                {
-                    dest+="/";
+                if (!dest.endsWith("/")) {
+                    dest += "/";
                 }
                 URL path = new URL(src);
                 String ending = src.substring(src.lastIndexOf('.'));
