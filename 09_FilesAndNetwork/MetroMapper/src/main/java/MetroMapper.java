@@ -34,7 +34,6 @@ public class MetroMapper {
     public static void main(String[] args) {
         try {
             Set<MetroStation> rawLineTable = fillStationSet(parseWikiPage());
-            rawLineTable.forEach(metroStation -> System.out.println(metroStation.toString() + "\n"));
             JSONObject map = tableToJson(rawLineTable);
             jsonToFile(OUTPUT_PATH, map);
             printAnalyzeResult(OUTPUT_PATH);
@@ -47,7 +46,7 @@ public class MetroMapper {
     private static Elements parseWikiPage() throws IOException {
         Document content = Jsoup.connect(WIKI_PAGE).get();
         Elements table = content.select("table.standard.sortable:contains(Список может) tr:has(td)");
-        htmlToFile(table);
+        //htmlToFile(table);
         return table;
     }
 
