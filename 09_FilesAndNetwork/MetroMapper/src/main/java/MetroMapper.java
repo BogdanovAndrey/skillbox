@@ -33,9 +33,13 @@ public class MetroMapper {
 
     public static void main(String[] args) {
         try {
+            //Создаем аналог таблицы с сайта wiki
             Set<MetroStation> rawLineTable = fillStationSet(parseWikiPage());
+            //Создаем финальный JSON объект
             JSONObject map = tableToJson(rawLineTable);
+
             jsonToFile(OUTPUT_PATH, map);
+            //Выводим полученный результат
             printAnalyzeResult(OUTPUT_PATH);
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,11 +55,16 @@ public class MetroMapper {
     }
 
     private static Set<MetroStation> fillStationSet(Elements htmlContent) {
+        //Разбираем строчку на элементу
         return htmlContent.parallelStream()
                 .map(el -> {
+                    //Выбираем строчку
                     Elements row = el.select("td");
+                    //Имя станции
                     String name = row.get(NAME_POZ).select("a").first().text().trim();
+                    //Список линий,куда она входит
                     Map<String, String> lines = getLinesInCell(row.get(LINE_POZ));
+                    //Список пересадок с этой станции
                     Map<String, String> connections = getConnectionsInCell(row.get(CONNECTION_POZ));
                     return new MetroStation(name, lines, connections, false);
                 }).collect(Collectors.toCollection(LinkedHashSet::new));
@@ -75,9 +84,11 @@ public class MetroMapper {
 
         for (MetroStation ms : set
         ) {
+            //Проверим обходили ли мы эти станции и есть ли там соединения
             if (!ms.isChecked() && !ms.getConnection().isEmpty()) {
                 entry = new ArrayList<>();
                 Map<String, String> connection;
+                //Добавляем свои линии
                 for (String line : ms.getLines().keySet()
                 ) {
                     connection = new HashMap<>(2, 1);
@@ -85,7 +96,10 @@ public class MetroMapper {
                     connection.put("station", ms.getName());
                     entry.add(connection);
                 }
+
                 ms.setChecked(true);
+
+                //Добавляем соединенные станции
                 for (Map.Entry<String, String> line : ms.getConnection().entrySet()
                 ) {
                     connection = new HashMap<>(2, 1);
@@ -106,7 +120,7 @@ public class MetroMapper {
         return connections;
     }
 
-
+    //Создает список стаций по веткам
     private static TreeMap<String, ArrayList<String>> getStationMap(Set<MetroStation> set) {
         TreeMap<String, ArrayList<String>> map = new TreeMap<>(MetroMapper::compareLineName);
 
@@ -114,11 +128,14 @@ public class MetroMapper {
         ) {
             for (String line : ms.getLines().keySet()
             ) {
+                //Проверяем была ли такая ветка
                 if (!map.containsKey(line)) {
+                    //Если нет, создаем и добавляем туда стацию
                     ArrayList<String> stationsInLine = new ArrayList<>();
                     stationsInLine.add(ms.getName());
                     map.put(line, stationsInLine);
                 } else {
+                    //Если была, просто добавим стацию
                     map.get(line).add(ms.getName());
                 }
             }
@@ -127,6 +144,7 @@ public class MetroMapper {
         return map;
     }
 
+    //Создает список линий метро с именем и цветом
     private static JSONArray getLinesFromSet(Set<MetroStation> set) {
         Set<Map<String, String>> s = new TreeSet<>((o1, o2) -> compareLineName(o1.get("number"), o2.get("number")));
         JSONArray lines = new JSONArray();
@@ -146,10 +164,14 @@ public class MetroMapper {
     }
 
     private static int compareLineName(String s1, String s2) {
+        //Если есть буквы в номере
         if (s1.matches(".+\\D") || s2.matches(".+\\D")) {
+            //Сравним номера веток метро без букв
             String base1 = s1.replaceAll("\\D+", "");
             String base2 = s2.replaceAll("\\D+", "");
+
             int preComp = Integer.compare(Integer.parseInt(base1), Integer.parseInt(base2));
+            //Если одинаковые, сравним длину номера
             if (preComp == 0) {
                 return Integer.compare(s1.length(), s2.length());
             } else {
@@ -161,18 +183,22 @@ public class MetroMapper {
     }
 
     private static Map<String, String> getLinesInCell(Element el) throws NullPointerException {
+
         Map<String, String> lines = new HashMap<>();
+
         Elements cellContent = el.select("span");
 
         if (cellContent.size() >= 2) {
+            //Получаем цифры из ячейки (номера линий + номер станции в подгруппе)
             String[] lineNumbers = cellContent.select(".sortkey").stream()
-                    //.limit(cellContent.size() - 1)
                     .map(Element::text)
                     .map(MetroMapper::trimLeadingZero)
                     .toArray(String[]::new);
+            //Получаем список имен линий
             String[] lineNames = cellContent.select("[title]:has(img)")
                     .stream().map(element -> element.attr("title"))
                     .toArray(String[]::new);
+            //Поскольку список имен стации двойной, берем каждый второй
             for (int i = 0; i < lineNumbers.length - 1; i++) {
                 lines.put(lineNumbers[i], lineNames[i * 2]);
             }
@@ -181,15 +207,18 @@ public class MetroMapper {
         return lines;
     }
 
+    //Создаем перечень пересечений
     private static HashMap<String, String> getConnectionsInCell(Element el) throws NullPointerException {
         HashMap<String, String> connections = new HashMap<>();
         Elements cellContent = el.select("span");
 
         if (cellContent.size() >= 2) {
+            //Получаем линии, которые пересекаются на этой станции
             String[] connectedLines = cellContent.select(".sortkey").stream()
                     .map(Element::text)
                     .map(MetroMapper::trimLeadingZero)
                     .toArray(String[]::new);
+            //Имена станций, которые соединяются
             String[] connectedStations = cellContent.select("[title]:not([href])")
                     .stream().map(element -> getConnectedStationName(element.attr("title")))
                     .toArray(String[]::new);
@@ -204,6 +233,7 @@ public class MetroMapper {
         return name.replaceAll("^0+", "");
     }
 
+    //Вырезает имя станции из предложения
     private static String getConnectedStationName(String text) {
         char[] chars = text.toCharArray();
         ArrayList<Integer> upperLettersIndex = new ArrayList<>();
