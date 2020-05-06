@@ -1,5 +1,8 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ContainerFactory;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,19 +28,21 @@ public class MetroMapper {
     final static int NAME_POZ = 1;
     //Столбец с номером линии для пересадки
     final static int CONNECTION_POZ = 3;
-
+    //Путь к выходному файлу
+    final static String OUTPUT_PATH = "target/MoscowMetroMap.json";
 
     public static void main(String[] args) {
         try {
             Set<MetroStation> rawLineTable = fillStationSet(parseWikiPage());
             rawLineTable.forEach(metroStation -> System.out.println(metroStation.toString() + "\n"));
             JSONObject map = tableToJson(rawLineTable);
-            jsonToFile("target/MoscowMetroMap.json", map);
-            //RouteCalculator rc = TestClass.getRouteCalculator();
+            jsonToFile(OUTPUT_PATH, map);
+            printAnalyzeResult(OUTPUT_PATH);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     private static Elements parseWikiPage() throws IOException {
         Document content = Jsoup.connect(WIKI_PAGE).get();
@@ -102,22 +107,6 @@ public class MetroMapper {
         return connections;
     }
 
-    private static int compareConnection(ArrayList<Map<String, String>> arr1, ArrayList<Map<String, String>> arr2) {
-        if (arr1.size() != arr2.size()) {
-            return Integer.compare(arr1.size(), arr2.size());
-        } else {
-            boolean equal = true;
-            for (Map<String, String> map1 : arr1
-            ) {
-                equal &= arr2.stream().anyMatch(map2 -> map2.equals(map1));
-            }
-            if (equal) {
-                return 0;
-            } else {
-                return arr1.toString().compareTo(arr2.toString());
-            }
-        }
-    }
 
     private static TreeMap<String, ArrayList<String>> getStationMap(Set<MetroStation> set) {
         TreeMap<String, ArrayList<String>> map = new TreeMap<>(MetroMapper::compareLineName);
@@ -151,7 +140,7 @@ public class MetroMapper {
                             .replaceAll("\\D+", ""))));
                     s.add(entry);
                 });
-        //TODO: add filter to stream and change return type to ArrayList
+
         lines.addAll(s);
 
         return lines;
@@ -267,14 +256,79 @@ public class MetroMapper {
         }
     }
 
-    private static String getJsonFile() {
+
+    private static void printAnalyzeResult(String outputPath) {
+        try {
+
+            getLinesData(outputPath).forEach(System.out::println);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private static ArrayList<String> getLinesData(String outPath) throws ParseException {
+        JSONParser parser = new JSONParser();
+
+        ContainerFactory containerFactory = new ContainerFactory() {
+            @Override
+            public Map createObjectContainer() {
+                return new LinkedHashMap<>();
+            }
+
+            @Override
+            public List creatArrayContainer() {
+                return new LinkedList<>();
+            }
+        };
+
+        Map jsonData = (Map) parser.parse(getJsonFile(outPath), containerFactory);
+        ArrayList<String> lineInformation = new ArrayList<>();
+        List linesArray = (List) jsonData.get("lines");
+        Map stationObject = (Map) jsonData.get("stations");
+
+        for (Object obj : stationObject.keySet()
+        ) {
+            StringBuilder out = new StringBuilder();
+            String lineNumber = (String) obj;
+
+            int stationNum = ((List) stationObject.get(obj)).size();
+            try {
+                String lineName = getLineName(linesArray, lineNumber);
+                out.append("\nЛиния - ").append(lineName);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            out.append("\n\tНомер - ").append(lineNumber);
+            out.append("\n\tКоличество станций на линии - ").append(stationNum);
+            lineInformation.add(out.toString());
+        }
+        return lineInformation;
+    }
+
+    private static String getLineName(List linesArray, String lineNumber) throws IllegalArgumentException {
+        String output = "";
+        for (Object obj : linesArray
+        ) {
+            Map lineObject = (Map) obj;
+            if (lineObject.get("number").equals(lineNumber)) {
+                return (String) lineObject.get("name");
+            }
+        }
+        throw new IllegalArgumentException(lineNumber + "not found;");
+    }
+
+
+    private static String getJsonFile(String outputPath) {
         StringBuilder builder = new StringBuilder();
         try {
-            List<String> lines = Files.readAllLines(Paths.get("example/map.json"));
+            List<String> lines = Files.readAllLines(Paths.get(outputPath));
             lines.forEach(builder::append);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return builder.toString();
     }
+
 }
