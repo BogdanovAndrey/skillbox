@@ -13,6 +13,5 @@ public class MetroStation {
     private Map<String, String> connection;
     private boolean isChecked;
 
-
 }
 

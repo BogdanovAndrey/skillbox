@@ -1,3 +1,5 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ContainerFactory;
@@ -10,6 +12,7 @@ import org.jsoup.select.Elements;
 import service.LineColor;
 import service.MetroStation;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,6 +34,8 @@ public class MetroMapper {
     //Путь к выходному файлу
     final static String OUTPUT_PATH = "target/MoscowMetroMap.json";
 
+    final static boolean OFFLINE = false;
+
     public static void main(String[] args) {
         try {
             //Создаем аналог таблицы с сайта wiki
@@ -48,7 +53,17 @@ public class MetroMapper {
 
 
     private static Elements parseWikiPage() throws IOException {
-        Document content = Jsoup.connect(WIKI_PAGE).get();
+        Document content = null;
+        if (OFFLINE) {
+            try {
+                File savedPage = new File("example/wiki.html");
+                content = Jsoup.parse(savedPage, "UTF-8");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            content = Jsoup.connect(WIKI_PAGE).get();
+        }
         Elements table = content.select("table.standard.sortable:contains(Список может) tr:has(td)");
         //htmlToFile(table);
         return table;
@@ -252,7 +267,8 @@ public class MetroMapper {
                 Files.delete(path);
             }
             Files.createFile(path);
-            Files.writeString(path, json.toJSONString(), StandardOpenOption.APPEND);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Files.writeString(Path.of(inpath), gson.toJson(json), StandardOpenOption.APPEND);
 
         } catch (IOException e) {
             e.printStackTrace();
