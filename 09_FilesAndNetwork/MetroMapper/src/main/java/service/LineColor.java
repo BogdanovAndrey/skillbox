@@ -29,6 +29,11 @@ public class LineColor {
         lineColors.add("Фуксия");
     }
 
+    public static String getColorByLine(String number) {
+        int line = Integer.parseInt(number.replaceAll("\\D+", ""));
+        return getColorByLine(line);
+    }
+
     public static String getColorByLine(int line) {
         if (line > 0 && line < lineColors.size()) {
             return lineColors.get(line - 1);

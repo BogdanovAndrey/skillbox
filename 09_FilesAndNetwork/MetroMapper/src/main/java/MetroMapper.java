@@ -34,10 +34,14 @@ public class MetroMapper {
     //Путь к выходному файлу
     final static String OUTPUT_PATH = "target/MoscowMetroMap.json";
 
-    final static boolean OFFLINE = false;
+    final static boolean OFFLINE = true;
 
     public static void main(String[] args) {
+
         try {
+            MetroIndex index = fillMetroIndex(parseWikiPage());
+
+
             //Создаем аналог таблицы с сайта wiki
             Set<MetroStation> rawLineTable = fillStationSet(parseWikiPage());
             //Создаем финальный JSON объект
@@ -49,6 +53,50 @@ public class MetroMapper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static MetroIndex fillMetroIndex(Elements htmlContent) {
+        MetroIndex index = new MetroIndex();
+        htmlContent.forEach(el -> {
+            //Выбираем строчку
+            Elements row = el.select("td");
+            //Имя станции
+            String name = row.get(NAME_POZ).select("a").first().text().trim();
+
+            //Список линий,куда она входит
+            Map<String, String> lines = getLinesInCell(row.get(LINE_POZ));
+            index.addStation(lines, name);
+            //Список пересадок с этой станции
+            Map<String, String> connections = getConnectionsInCell(row.get(CONNECTION_POZ));
+            if (connections.size() > 0) {
+                lines.forEach((lineNumber, lineName) -> {
+                    connections.put(lineNumber, name);
+                });
+
+                index.addConnection(connections);
+            }
+
+            //Добавить собственную станцию
+        });
+//        private static Set<MetroStation> fillStationSet(Elements htmlContent) {
+//            //Разбираем строчку на элементу
+//            return htmlContent.parallelStream()
+//                    .map(el -> {
+//                        //Выбираем строчку
+//                        Elements row = el.select("td");
+//                        //Имя станции
+//                        String name = row.get(NAME_POZ).select("a").first().text().trim();
+//                        //Список линий,куда она входит
+//                        Map<String, String> lines = getLinesInCell(row.get(LINE_POZ));
+//                        //Список пересадок с этой станции
+//                        Map<String, String> connections = getConnectionsInCell(row.get(CONNECTION_POZ));
+        // //Добавить собственную станцию
+//                        return new MetroStation(name, lines, connections, false);
+//                    }).collect(Collectors.toCollection(LinkedHashSet::new));
+//        }
+
+
+        return index;
     }
 
 
@@ -257,7 +305,10 @@ public class MetroMapper {
                 upperLettersIndex.add(i);
             }
         }
-        return text.substring(upperLettersIndex.get(0), upperLettersIndex.get(upperLettersIndex.size() - 1)).trim();
+        String midName = text.substring(upperLettersIndex.get(0), upperLettersIndex.get(upperLettersIndex.size() - 1)).trim();
+
+        return midName.replaceAll("\\(.+\\)", "")
+                .trim();
     }
 
     static private void jsonToFile(String inpath, JSONObject json) {
