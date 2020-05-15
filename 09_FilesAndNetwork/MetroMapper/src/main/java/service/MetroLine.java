@@ -12,11 +12,4 @@ public class MetroLine {
 
     private LinkedHashSet<String> stations = new LinkedHashSet<>();
 
-//    @Override
-//    public int compareTo(MetroLine o) {
-//
-//    }
-//    public boolean equals(MetroLine o){
-//        return this.number.equals(o.number);
-//    }
 }

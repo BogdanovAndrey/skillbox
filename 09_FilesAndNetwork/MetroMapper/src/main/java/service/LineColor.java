@@ -6,8 +6,8 @@ import org.jsoup.nodes.Document;
 import java.util.ArrayList;
 
 public class LineColor {
-    final static ArrayList<String> lineColors = new ArrayList<>();
-    final static String COLOR_LIST = "https://www.htmlcsscolor.com/hex/";
+    private final static ArrayList<String> lineColors = new ArrayList<>();
+    private final static String COLOR_LIST = "https://www.htmlcsscolor.com/hex/";
 
     static {
         lineColors.add("Красная");
@@ -34,7 +34,7 @@ public class LineColor {
         return getColorByLine(line);
     }
 
-    public static String getColorByLine(int line) {
+    private static String getColorByLine(int line) {
         if (line > 0 && line < lineColors.size()) {
             return lineColors.get(line - 1);
         } else {
@@ -42,7 +42,7 @@ public class LineColor {
         }
     }
 
-
+    @SuppressWarnings("unused")
     public static String getLineColorFromHex(int hex) {
         String color = null;
         try {

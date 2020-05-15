@@ -1,17 +1,13 @@
-import com.google.gson.JsonElement;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import lombok.Data;
-import service.LineColor;
-import service.MetroLine;
+package service;
 
-import java.lang.reflect.Type;
+import lombok.Data;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 
 @Data
-public class MetroIndex implements JsonSerializer<MetroIndex> {
+public class MetroIndex {
 
     private TreeMap<String, MetroLine> lines;
     private HashSet<Map<String, String>> connections;
@@ -30,13 +26,15 @@ public class MetroIndex implements JsonSerializer<MetroIndex> {
         });
     }
 
+    public void addLines(TreeMap<String, MetroLine> lines) {
+        this.lines.putAll(lines);
+    }
 
     public void addConnection(Map<String, String> connections) {
         this.connections.add(connections);
     }
 
     private void addStationToLine(String lineNumber, String stationName) {
-
         lines.get(lineNumber)
                 .getStations()
                 .add(stationName);
@@ -61,8 +59,5 @@ public class MetroIndex implements JsonSerializer<MetroIndex> {
         }
     }
 
-    @Override
-    public JsonElement serialize(MetroIndex metroIndex, Type type, JsonSerializationContext jsonSerializationContext) {
-        return null;
-    }
+
 }
