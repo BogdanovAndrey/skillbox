@@ -77,7 +77,7 @@ public class MetroMapper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return content != null ? content.select("table.standard.sortable:contains(Список может) tr:has(td)") : null;
+        return content != null ? content.select("table.standard.sortable tr:has(td)") : null;
     }
 
 
