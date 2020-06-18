@@ -1,42 +1,46 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.query.Query;
+
+import java.util.List;
+import java.util.Scanner;
 
 public class SQLer {
-    private final static String URL = "jdbc:mysql://localhost:3306/skillbox?useUnicode=true&serverTimezone=UTC";
-    private final static String PASS = "Testtest123";
-    private final static String USER = "BogdAn";
-    private final static String OUTPUT_FORMAT = "|%-40s|%-30s|%n";
-
 
     public static void main(String[] args) {
+        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .configure("hibernate.cfg.xml").build();
+        Metadata metadata = new MetadataSources(registry).getMetadataBuilder().build();
+        SessionFactory sessionFactory = metadata.getSessionFactoryBuilder().build();
+
+
+        Session session = sessionFactory.openSession();
+
+        Query<Course> query = session.createQuery("FROM Course", Course.class);
+
+        List<Course> list = query.list();
+
+        session.close();
+
+        Scanner input = new Scanner(System.in);
         try {
-            Connection connection = DriverManager.getConnection(URL, USER, PASS);
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT Courses.name AS Course_name, (COUNT(MONTH(subscription_date))/12) AS Average_sale_per_month \n" +
-                    "FROM Subscriptions \n" +
-                    "JOIN Courses ON Courses.id = Subscriptions.course_id\n" +
-                    "group  by Courses.name;");
-
-            printRow("Название курса", "Среднее кол-во продаж в месяц");
-
-            while (rs.next()) {
-                String name = rs.getString("Course_name");
-                String avg = rs.getString("Average_sale_per_month");
-                printRow(name, avg);
-
-            }
-            statement.close();
-            connection.close();
+            System.out.println("\nВведите номер курса для выдачи информации:");
+            System.out.println("(от 1 до " + list.size() + ")");
+            System.out.print(">>  ");
+            Course course = list.get(input.nextInt() - 1);
+            System.out.println("\tНазвание курса: " + course.getName());
+            System.out.println("\tКоличество студентов: " + course.getStudentsCount());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Ошибка ввода");
         }
-    }
 
-    private static void printRow(String col1, String col2) {
-        System.out.printf(OUTPUT_FORMAT, col1, col2);
+
 
     }
+
 
 }
