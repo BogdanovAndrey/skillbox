@@ -1,3 +1,5 @@
+package tables;
+
 import javax.persistence.*;
 
 @Entity

@@ -5,6 +5,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.query.Query;
+import tables.Course;
 
 import java.util.List;
 import java.util.Scanner;
@@ -20,7 +21,7 @@ public class SQLer {
 
         Session session = sessionFactory.openSession();
 
-        Query<Course> query = session.createQuery("FROM Course", Course.class);
+        Query<Course> query = session.createQuery("FROM tables.Course", Course.class);
 
         List<Course> list = query.list();
 

@@ -1,0 +1,74 @@
+mysql> Show tables;
++--------------------+
+| Tables_in_skillbox |
++--------------------+
+| courses            |
+| purchaselist       |
+| students           |
+| subscriptions      |
+| teachers           |
++--------------------+
+5 rows in set (1.84 sec)
+
+mysql> describe courses;
++----------------+------------------------------------------------------------------+------+-----+---------+----------------+
+| Field          | Type                                                             | Null | Key | Default | Extra          |
++----------------+------------------------------------------------------------------+------+-----+---------+----------------+
+| id             | int unsigned                                                     | NO   | PRI | NULL    | auto_increment |
+| name           | varchar(500)                                                     | YES  |     | NULL    |                |
+| duration       | int unsigned                                                     | YES  |     | NULL    |                |
+| type           | enum('DESIGN','PROGRAMMING','MARKETING','MANAGEMENT','BUSINESS') | NO   |     | NULL    |                |
+| description    | varchar(500)                                                     | YES  |     | NULL    |                |
+| teacher_id     | int unsigned                                                     | YES  | MUL | NULL    |                |
+| students_count | int unsigned                                                     | YES  |     | NULL    |                |
+| price          | int unsigned                                                     | YES  |     | NULL    |                |
+| price_per_hour | float                                                            | YES  |     | NULL    |                |
++----------------+------------------------------------------------------------------+------+-----+---------+----------------+
+9 rows in set (0.60 sec)
+
+mysql> describe purchaselist
+    -> ;
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| student_name      | varchar(500) | YES  |     | NULL    |       |
+| course_name       | varchar(500) | YES  |     | NULL    |       |
+| price             | int          | YES  |     | NULL    |       |
+| subscription_date | datetime     | YES  |     | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> describe student
+    -> s;
+mysql> describe students;
++-------------------+--------------+------+-----+---------+----------------+
+| Field             | Type         | Null | Key | Default | Extra          |
++-------------------+--------------+------+-----+---------+----------------+
+| id                | int unsigned | NO   | PRI | NULL    | auto_increment |
+| name              | varchar(45)  | NO   |     | NULL    |                |
+| age               | int unsigned | YES  |     | NULL    |                |
+| registration_date | datetime     | NO   |     | NULL    |                |
++-------------------+--------------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+mysql> describe subscriptions;
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| student_id        | int unsigned | NO   | PRI | NULL    |       |
+| course_id         | int unsigned | NO   | PRI | NULL    |       |
+| subscription_date | datetime     | NO   |     | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+
+3 rows in set (0.05 sec)
+
+mysql> describe teachers;
++--------+--------------+------+-----+---------+----------------+
+| Field  | Type         | Null | Key | Default | Extra          |
++--------+--------------+------+-----+---------+----------------+
+| id     | int unsigned | NO   | PRI | NULL    | auto_increment |
+| name   | varchar(45)  | NO   |     | NULL    |                |
+| salary | int unsigned | YES  |     | NULL    |                |
+| age    | int unsigned | YES  |     | NULL    |                |
++--------+--------------+------+-----+---------+----------------+
+4 rows in set (0.42 sec)
+
+mysql>

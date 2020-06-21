@@ -1,3 +1,5 @@
+package tables;
+
 public enum CourseType {
     DESIGN,
     PROGRAMMING,
