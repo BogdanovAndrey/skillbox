@@ -8,26 +8,29 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String description;
 
-    private int duration;
+    private Integer duration;
+
     private String name;
 
-    private int price;
+    private Integer price;
+
     @Column(name = "price_per_hour")
-    private float pricePerHour;
+    private Float pricePerHour;
 
     @Column(name = "students_count")
     private int studentsCount;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @Column(name = "teacher_id")
-    private int teacherId;
+    private Teacher teacher;
+
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "enum")
     private CourseType type;
 
-    public Course() {
-
-    }
 
     public int getId() {
         return id;
@@ -69,12 +72,12 @@ public class Course {
         this.description = description;
     }
 
-    public int getTeacherId() {
-        return teacherId;
+    public Teacher getTeacher() {
+        return teacher;
     }
 
-    public void setTeacherId(int teacherId) {
-        this.teacherId = teacherId;
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 
     public int getStudentsCount() {

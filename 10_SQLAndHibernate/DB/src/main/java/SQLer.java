@@ -1,5 +1,6 @@
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -7,6 +8,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.query.Query;
 import tables.Course;
 
+import javax.persistence.EntityTransaction;
 import java.util.List;
 import java.util.Scanner;
 
@@ -18,7 +20,8 @@ public class SQLer {
         Metadata metadata = new MetadataSources(registry).getMetadataBuilder().build();
         SessionFactory sessionFactory = metadata.getSessionFactoryBuilder().build();
 
-
+        EntityTransaction et = null;
+        Transaction tr = null;
         Session session = sessionFactory.openSession();
 
         Query<Course> query = session.createQuery("FROM tables.Course", Course.class);
