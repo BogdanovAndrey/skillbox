@@ -2,6 +2,7 @@ package tables;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "Students")
@@ -14,8 +15,18 @@ public class Student {
 
     private Integer age;
 
-    @Column (name = "registration_date")
+    @Column(name = "registration_date")
     private LocalDateTime registrationDate;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "student",
+            fetch = FetchType.EAGER)
+    private List<Subscription> subscriptions;
+
+    @ManyToMany(cascade = CascadeType.ALL,
+            mappedBy = "students",
+            fetch = FetchType.EAGER)
+    private List<Course> courses;
 
     public int getId() {
         return id;
