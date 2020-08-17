@@ -21,16 +21,12 @@ public class Student {
     @Column(name = "registration_date")
     private LocalDateTime registrationDate;
 
-    /*@OneToMany(cascade = CascadeType.ALL,
-            mappedBy = "student",
-            fetch = FetchType.LAZY)
-    private List<Subscription> subscriptions;
-*/
+
 //    @ManyToMany(cascade = CascadeType.ALL,
 //            mappedBy = "students",
 //            fetch = FetchType.EAGER)
     @OneToMany(
-            mappedBy = "course",
+            mappedBy = "student",
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )

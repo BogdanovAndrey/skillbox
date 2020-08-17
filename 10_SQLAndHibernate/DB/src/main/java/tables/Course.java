@@ -42,7 +42,7 @@ public class Course {
 //            joinColumns = {@JoinColumn(name = "course_id")},
 //            inverseJoinColumns = {@JoinColumn(name = "student_id")})
     @OneToMany(
-            mappedBy = "student",
+            mappedBy = "course",
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
@@ -56,7 +56,7 @@ public class Course {
         sb.append("\nСтоимость: ").append(this.price);
         sb.append("\nПродано: ").append(this.studentsCount);
         sb.append("\nОбучающиеся:\n");
-        students.forEach(sb::append);
+        students.forEach(subscription -> sb.append(subscription.getStudent()));
         return sb.toString();
     }
 }
