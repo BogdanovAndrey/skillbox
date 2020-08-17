@@ -1,10 +1,13 @@
 package tables;
 
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.time.LocalDate;
 
+@Data
 @Entity
 @Table(name = "purchaselist")
 public class Purchase {

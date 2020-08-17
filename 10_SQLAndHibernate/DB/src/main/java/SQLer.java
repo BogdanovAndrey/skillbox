@@ -8,7 +8,6 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.query.Query;
 import tables.Course;
 import tables.Student;
-import tables.Subscription;
 
 import javax.persistence.EntityTransaction;
 import java.util.List;
@@ -28,14 +27,14 @@ public class SQLer {
 
         Query<Course> query = session.createQuery("FROM tables.Course", Course.class);
 
-        Query<Subscription> subscriptions = session.createQuery("FROM tables.Subscription", Subscription.class);
+       // Query<Subscription> subscriptions = session.createQuery("FROM tables.Subscription", Subscription.class);
 
         Query<Student> students = session.createQuery("FROM tables.Student", Student.class);
 
         List<Course> list = query.list();
-        List<Subscription> subList = subscriptions.list();
+        // List<Subscription> subList = subscriptions.list();
         List<Student> studentList = students.list();
-        session.close();
+
 
         Scanner input = new Scanner(System.in);
         try {
@@ -45,12 +44,12 @@ public class SQLer {
             Course course = list.get(input.nextInt() - 1);
             System.out.println("\tНазвание курса: " + course.getName());
             System.out.println("\tКоличество студентов: " + course.getStudentsCount());
-            course.getStudents().forEach(System.out::println);
+            System.out.println(course);
         } catch (Exception e) {
             System.out.println("Ошибка ввода");
         }
 
-
+        session.close();
 
     }
 

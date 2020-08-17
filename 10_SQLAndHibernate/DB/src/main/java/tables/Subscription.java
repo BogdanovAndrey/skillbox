@@ -1,43 +1,43 @@
 package tables;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "Subscriptions")
-public class Subscription implements Serializable {
-    @Id
-    @ManyToOne(cascade = CascadeType.ALL)
+@Table(name = "subscriptions")
+public class Subscription {
+    //        @Id
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    private Student student;
+//
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    private Course course;
+    @EmbeddedId
+    private SubscriptionID id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @MapsId("student")
     private Student student;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @MapsId("course")
     private Course course;
 
     @Column(name = "subscription_date")
     private LocalDateTime subscriptionDate;
 
-    public Student getStudent() {
-        return student;
+    private Subscription() {
     }
 
-    public void setStudent(Student student) {
+    public Subscription(Student student, Course course) {
         this.student = student;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
         this.course = course;
+        this.id = new SubscriptionID(student.getId(), course.getId());
     }
 
-    public LocalDateTime getSubscriptionDate() {
-        return subscriptionDate;
-    }
-
-    public void setSubscriptionDate(LocalDateTime subscriptionDate) {
-        this.subscriptionDate = subscriptionDate;
-    }
 }

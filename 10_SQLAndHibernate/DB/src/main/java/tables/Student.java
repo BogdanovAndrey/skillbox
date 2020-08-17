@@ -1,9 +1,12 @@
 package tables;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "Students")
 public class Student {
@@ -18,45 +21,23 @@ public class Student {
     @Column(name = "registration_date")
     private LocalDateTime registrationDate;
 
-    @OneToMany(cascade = CascadeType.ALL,
+    /*@OneToMany(cascade = CascadeType.ALL,
             mappedBy = "student",
-            fetch = FetchType.EAGER)
+            fetch = FetchType.LAZY)
     private List<Subscription> subscriptions;
+*/
+//    @ManyToMany(cascade = CascadeType.ALL,
+//            mappedBy = "students",
+//            fetch = FetchType.EAGER)
+    @OneToMany(
+            mappedBy = "course",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
+    )
+    private List<Subscription> courses;
 
-    @ManyToMany(cascade = CascadeType.ALL,
-            mappedBy = "students",
-            fetch = FetchType.EAGER)
-    private List<Course> courses;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public LocalDateTime getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(LocalDateTime registrationDate) {
-        this.registrationDate = registrationDate;
+    @Override
+    public String toString() {
+        return "Имя: " + this.name + "\t Возраст: " + this.age + "\n";
     }
 }
