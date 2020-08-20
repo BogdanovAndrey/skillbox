@@ -1,4 +1,4 @@
-package tables;
+package tables.utility;
 
 public enum CourseType {
     DESIGN,

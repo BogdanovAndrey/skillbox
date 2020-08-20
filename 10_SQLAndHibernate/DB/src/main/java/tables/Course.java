@@ -2,9 +2,17 @@ package tables;
 
 import lombok.Getter;
 import lombok.Setter;
+import tables.utility.CourseType;
 
 import javax.persistence.*;
 import java.util.List;
+
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllCourses",
+                query = "from Course"
+        )})
+
 
 @Getter
 @Setter
@@ -37,14 +45,14 @@ public class Course {
     private CourseType type;
 
     //    @ManyToMany(cascade = CascadeType.ALL,
-//            fetch = FetchType.EAGER)
+//            fetch = FetchType.LAZY)
 //    @JoinTable(name = "Subscriptions",
 //            joinColumns = {@JoinColumn(name = "course_id")},
 //            inverseJoinColumns = {@JoinColumn(name = "student_id")})
     @OneToMany(
             mappedBy = "course",
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
     private List<Subscription> students;
 

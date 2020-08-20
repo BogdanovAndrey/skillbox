@@ -6,6 +6,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllStudents",
+                query = "from Student"
+        )})
+
 @Data
 @Entity
 @Table(name = "Students")
@@ -22,7 +28,7 @@ public class Student {
     private LocalDateTime registrationDate;
 
 
-//    @ManyToMany(cascade = CascadeType.ALL,
+    //    @ManyToMany(cascade = CascadeType.ALL,
 //            mappedBy = "students",
 //            fetch = FetchType.EAGER)
     @OneToMany(
