@@ -25,13 +25,13 @@ public class Subscription {
     @EmbeddedId
     private SubscriptionID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("student")
-    private Student student;
+    //@ManyToOne(fetch = FetchType.LAZY)
+    // @MapsId("student")
+    //private Student student;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("course")
-    private Course course;
+    // @ManyToOne(fetch = FetchType.LAZY)
+    //= @MapsId("course")
+    //private Course course;
 
     @Column(name = "subscription_date")
     private LocalDateTime subscriptionDate;
@@ -39,20 +39,15 @@ public class Subscription {
     public Subscription() {
     }
 
-    public Subscription(Student student, Course course) {
-        this.student = student;
-        this.course = course;
-        this.id = new SubscriptionID(student.getId(), course.getId());
-    }
 
     public String toString() {
         return "********\n" +
                 "Дата подписки: " +
                 (DateTimeFormatter.ISO_DATE.format(subscriptionDate)) +
                 "\nСтудент: " +
-                student.getName() +
+                id.student.getName() +
                 "\nКурс: " +
-                course.getName();
+                id.course.getName();
     }
 
     @Embeddable
@@ -60,17 +55,12 @@ public class Subscription {
     @Setter
     @EqualsAndHashCode
     public static class SubscriptionID implements Serializable {
-        @Column(name = "student_id")
-        private int student;
-        @Column(name = "course_id")
-        private int course;
+        @OneToOne
+        @MapsId
+        private Student student;
+        @OneToOne
+        @MapsId
+        private Course course;
 
-        public SubscriptionID() {
-        }
-
-        public SubscriptionID(int studentId, int courseId) {
-            this.student = studentId;
-            this.course = courseId;
-        }
     }
 }

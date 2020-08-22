@@ -32,9 +32,9 @@ public class Student {
 //            mappedBy = "students",
 //            fetch = FetchType.EAGER)
     @OneToMany(
-            mappedBy = "student",
+            mappedBy = "id.student",
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
     private List<Subscription> courses;
 
