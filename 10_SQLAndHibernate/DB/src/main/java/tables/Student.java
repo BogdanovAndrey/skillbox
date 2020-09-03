@@ -27,8 +27,7 @@ public class Student {
     @Column(name = "registration_date")
     private LocalDateTime registrationDate;
 
-
-    //    @ManyToMany(cascade = CascadeType.ALL,
+//    @ManyToMany(cascade = CascadeType.ALL,
 //            mappedBy = "students",
 //            fetch = FetchType.EAGER)
     @OneToMany(

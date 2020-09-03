@@ -20,13 +20,16 @@ public class Purchase {
     @EmbeddedId
     private PurchaseID id;
 
+    @Column(name = "subscription_date")
+    private LocalDateTime subscriptionDate;
+
     private Integer price;
 
 
     public String toString() {
         return "********\n" +
                 "Дата подписки: " +
-                (DateTimeFormatter.ISO_DATE.format(id.getSubscriptionDate())) +
+                (DateTimeFormatter.ISO_DATE.format(getSubscriptionDate())) +
                 "\nСтудент: " +
                 id.getStudentName() +
                 "\nКурс: " +
@@ -42,11 +45,7 @@ public class Purchase {
         private String studentName;
         @Column(name = "course_name")
         private String courseName;
-        @Column(name = "subscription_date")
-        private LocalDateTime subscriptionDate;
 
-        public PurchaseID() {
-        }
 
     }
 }
