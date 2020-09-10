@@ -9,6 +9,10 @@ import java.util.List;
 public class AbstractDAO<L> implements DatabaseTable<L> {
     private Session session;
 
+    public AbstractDAO(Session session) {
+        this.session = session;
+    }
+
     @Override
     public List<L> findAll() {
         return null;
@@ -21,7 +25,6 @@ public class AbstractDAO<L> implements DatabaseTable<L> {
 
     @Override
     public void save(L input) {
-
     }
 
     @Override

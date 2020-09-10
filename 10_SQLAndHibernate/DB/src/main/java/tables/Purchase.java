@@ -45,7 +45,5 @@ public class Purchase {
         private String studentName;
         @Column(name = "course_name")
         private String courseName;
-
-
     }
 }

@@ -6,11 +6,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@NamedQueries({
-        @NamedQuery(
-                name = "getAllStudents",
-                query = "from Student"
-        )})
 
 @Data
 @Entity

@@ -8,10 +8,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-/*@Table(name = "linked_purchase_list",
-        uniqueConstraints = { @UniqueConstraint(name = "uk_course_student_ids",
-                columnNames = {"student_id", "course_id"})})
-*/
 @Data
 public class LinkedPurchaseList {
     @EmbeddedId
@@ -35,12 +31,14 @@ public class LinkedPurchaseList {
     @Embeddable
     @Data
     public static class LinkedPurchaseListID implements Serializable {
-        @OneToOne
-        @MapsId
+        @ManyToOne
+        @JoinColumn(name = "student_id")
+
         private Student student;
 
-        @OneToOne
-        @MapsId
+        @ManyToOne
+        @JoinColumn(name = "course_id")
+
         private Course course;
 
     }

@@ -1,14 +1,20 @@
 package dao;
 
 import dao.util.AbstractDAO;
+import org.hibernate.Session;
 import tables.LinkedPurchaseList;
 
 import java.util.List;
 
 public class LinkedPurchaseListDAO extends AbstractDAO<LinkedPurchaseList> {
+
+    public LinkedPurchaseListDAO(Session session) {
+        super(session);
+    }
+
     @Override
     public List<LinkedPurchaseList> findAll() {
-        return (List<LinkedPurchaseList>) getSession().createQuery("from LinkedPurchaseList").list();
+        return getSession().createQuery("from LinkedPurchaseList", LinkedPurchaseList.class).list();
     }
 
     @Override
@@ -18,7 +24,7 @@ public class LinkedPurchaseListDAO extends AbstractDAO<LinkedPurchaseList> {
 
     @Override
     public void save(LinkedPurchaseList input) {
-
+        getSession().save(input);
     }
 
     @Override
