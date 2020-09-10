@@ -30,7 +30,7 @@ public class SQLer {
 
         //Очищаем таблицу для чистоты эксперимента
         skillboxDAO.getLinkedPurchaseListDAO().deleteAll();
-
+    /*
         //Наполняем таблицу с помощью HQL запроса
         skillboxDAO.getLinkedPurchaseListDAO().fillTable();
         System.out.println("Rows added by HQL: " + skillboxDAO.getLinkedPurchaseListDAO().findAll().size());
@@ -43,6 +43,7 @@ public class SQLer {
         skillboxDAO.setSession(session);
         //Очищаем таблицу для чистоты эксперимента
         skillboxDAO.getLinkedPurchaseListDAO().deleteAll();
+    */
         //Наполним таблицу в цикле через создание экземпляров класса
         fillTableInCycle(skillboxDAO);
         System.out.println("Rows added in cycle: " + skillboxDAO.getLinkedPurchaseListDAO().findAll().size());

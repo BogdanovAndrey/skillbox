@@ -13,10 +13,12 @@ public class LinkedPurchaseList {
     @EmbeddedId
     @NaturalId
     private LinkedPurchaseListID id;
+
+    /*Поля для заполнения таблицы с помощью HQL
     @Column(name = "student_id", insertable = false, updatable = false, unique = false)
     private Integer student;
     @Column(name = "course_id", insertable = false, updatable = false, unique = false)
-    private Integer course;
+    private Integer course;*/
     @Column(name = "course_name")
     private String courseName;
     @Column(name = "student_name")

@@ -32,7 +32,7 @@ public class LinkedPurchaseListDAO extends AbstractDAO<LinkedPurchaseList> {
 
     }
 
-    public void fillTable() {
+    /*public void fillTable() {
         getSession().createQuery(
                 "insert into LinkedPurchaseList(student,course,courseName,studentName,price, subscriptionDate) " +
                         //  "insert into LinkedPurchaseList(id,courseName,studentName,price, subscriptionDate) " +
@@ -41,7 +41,7 @@ public class LinkedPurchaseListDAO extends AbstractDAO<LinkedPurchaseList> {
                         "join Course c on c.name = pl.id.courseName " +
                         "join Student s on s.name = pl.id.studentName")
                 .executeUpdate();
-    }
+    }*/
 
     public void deleteAll() {
         getSession().createQuery(" delete from LinkedPurchaseList").executeUpdate();
