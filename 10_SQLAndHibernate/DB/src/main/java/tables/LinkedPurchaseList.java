@@ -31,12 +31,12 @@ public class LinkedPurchaseList {
     @Embeddable
     @Data
     public static class LinkedPurchaseListID implements Serializable {
-        @ManyToOne
+        @OneToOne
         @JoinColumn(name = "student_id")
 
         private Student student;
 
-        @ManyToOne
+        @OneToOne
         @JoinColumn(name = "course_id")
 
         private Course course;

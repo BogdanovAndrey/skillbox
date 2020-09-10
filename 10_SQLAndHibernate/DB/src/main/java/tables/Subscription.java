@@ -56,10 +56,10 @@ public class Subscription {
     @EqualsAndHashCode
     public static class SubscriptionID implements Serializable {
         @OneToOne
-        @MapsId
+        @JoinColumn(name = "student_id")
         private Student student;
         @OneToOne
-        @MapsId
+        @JoinColumn(name = "course_id")
         private Course course;
 
     }
