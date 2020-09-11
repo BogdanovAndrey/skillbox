@@ -7,23 +7,23 @@ import java.io.File;
 
 @Data
 @AllArgsConstructor
-public class RoughImageResizer implements Runnable{
-private File[] input;
-private String dstFolder;
-private int newWidth;
+public class RoughImageResizer implements Runnable {
+    private File[] input;
+    private String dstFolder;
+    private int newWidth;
 
-    void resize(File[] input, String dstFolder, int newWidth){
-        try
-        {
+    void resize(File[] input, String dstFolder, int newWidth) {
+        try {
             long start = System.currentTimeMillis();
-            for(File file : input)
-            {
+            for (File file : input) {
+                BufferedImage image;
+                //synchronized (file) {
+                image = ImageIO.read(file);
+                //}
 
-                BufferedImage image = ImageIO.read(file);
-                if(image == null) {
+                if (image == null) {
                     continue;
                 }
-
 
                 int newHeight = (int) Math.round(
                         image.getHeight() / (image.getWidth() / (double) newWidth)
@@ -35,8 +35,7 @@ private int newWidth;
                 int widthStep = image.getWidth() / newWidth;
                 int heightStep = image.getHeight() / newHeight;
 
-                for (int x = 0; x < newWidth; x++)
-                {
+                for (int x = 0; x < newWidth; x++) {
                     for (int y = 0; y < newHeight; y++) {
                         int rgb = image.getRGB(x * widthStep, y * heightStep);
                         newImage.setRGB(x, y, rgb);
@@ -48,8 +47,7 @@ private int newWidth;
 
             }
             System.out.println("Duration: " + (System.currentTimeMillis() - start));
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
