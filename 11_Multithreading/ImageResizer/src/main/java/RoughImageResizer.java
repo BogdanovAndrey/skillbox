@@ -1,30 +1,30 @@
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-public class Main
-{
-    public static void main(String[] args)
-    {
-        String srcFolder = "/users/sortedmap/Desktop/src";
-        String dstFolder = "/users/sortedmap/Desktop/dst";
+@Data
+@AllArgsConstructor
+public class RoughImageResizer implements Runnable{
+private File[] input;
+private String dstFolder;
+private int newWidth;
 
-        File srcDir = new File(srcFolder);
-
-        long start = System.currentTimeMillis();
-
-        File[] files = srcDir.listFiles();
-
+    void resize(File[] input, String dstFolder, int newWidth){
         try
         {
-            for(File file : files)
+            long start = System.currentTimeMillis();
+            for(File file : input)
             {
+
                 BufferedImage image = ImageIO.read(file);
                 if(image == null) {
                     continue;
                 }
 
-                int newWidth = 300;
+
                 int newHeight = (int) Math.round(
                         image.getHeight() / (image.getWidth() / (double) newWidth)
                 );
@@ -45,12 +45,17 @@ public class Main
 
                 File newFile = new File(dstFolder + "/" + file.getName());
                 ImageIO.write(newImage, "jpg", newFile);
+
             }
+            System.out.println("Duration: " + (System.currentTimeMillis() - start));
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
 
-        System.out.println("Duration: " + (System.currentTimeMillis() - start));
+    @Override
+    public void run() {
+        resize(input, dstFolder, newWidth);
     }
 }
