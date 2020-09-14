@@ -1,25 +1,26 @@
-import lombok.AllArgsConstructor;
+package util;
+
 import lombok.Data;
 import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-@Data
-@AllArgsConstructor
-public class FineImageResizer implements Runnable{
-    private File[] input;
-    private String dstFolder;
-    private int newWidth;
 
-    void resize(File[] input, String dstFolder, int newWidth){
-        try
-        {
+@Data
+
+public class FineImageResizer extends AbstractResizer {
+
+    public FineImageResizer(File[] splittedFile, String dstFolder, int newWidth) {
+        super(splittedFile, dstFolder, newWidth);
+    }
+
+    void resize(File[] input, String dstFolder, int newWidth) {
+        try {
             long start = System.currentTimeMillis();
-            for(File file : input)
-            {
+            for (File file : input) {
                 BufferedImage image = ImageIO.read(file);
-                if(image == null) {
+                if (image == null) {
                     continue;
                 }
 

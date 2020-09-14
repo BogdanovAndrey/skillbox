@@ -1,3 +1,5 @@
+package util;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -7,10 +9,12 @@ import java.io.File;
 
 @Data
 @AllArgsConstructor
-public class RoughImageResizer implements Runnable {
-    private File[] input;
-    private String dstFolder;
-    private int newWidth;
+public class RoughImageResizer extends AbstractResizer {
+
+
+    public RoughImageResizer(File[] splittedFile, String dstFolder, int newWidth) {
+        super(splittedFile, dstFolder, newWidth);
+    }
 
     void resize(File[] input, String dstFolder, int newWidth) {
         try {
