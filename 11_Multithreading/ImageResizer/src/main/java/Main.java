@@ -45,7 +45,12 @@ public class Main {
             switch (operationType) {
                 case "F": {
                     ResizeMethod method = (image, height, width) -> Scalr.resize(
-                            image,
+                            Scalr.resize(
+                                    image,
+                                    Scalr.Method.SPEED,
+                                    width * 2,
+                                    height * 2
+                            ),
                             Scalr.Method.ULTRA_QUALITY,
                             width,
                             height);
