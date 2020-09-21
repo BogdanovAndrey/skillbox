@@ -1,10 +1,14 @@
+
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 public class Bank
 {
-    private HashMap<String, Account> accounts;
+    private HashMap<String, Account> accounts = new HashMap<>();
     private final Random random = new Random();
+
+
 
     public synchronized boolean isFraud(String fromAccountNum, String toAccountNum, long amount)
         throws InterruptedException
@@ -30,6 +34,13 @@ public class Bank
      */
     public long getBalance(String accountNum)
     {
-        return 0;
+        return accounts.get(accountNum).getMoney();
+    }
+    public long getTotalBalance () throws NoSuchElementException
+    {
+        return accounts.values()
+                .stream()
+                .map(Account::getMoney)
+                .reduce(Long::sum).orElseThrow();
     }
 }
