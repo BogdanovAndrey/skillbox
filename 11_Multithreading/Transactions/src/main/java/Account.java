@@ -1,24 +1,33 @@
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Data
+@AllArgsConstructor
 public class Account {
     private long money;
-    private String accNumber;
+    private final String accNumber;
     private boolean status;
 
-    public void addMoney(long modMoney) {
+    public synchronized void addMoney(long modMoney) {
         money += modMoney;
     }
-    public void decMoney (long modMoney){
+
+    public synchronized void decMoney(long modMoney) {
         money -= modMoney;
     }
-    public boolean isBlocked(){
+
+    public boolean isBlocked() {
         return status;
     }
-    public void block(){
+
+    public synchronized void block() {
         status = true;
     }
-    public void unblock(){
+
+    public synchronized void unblock() {
         status = false;
+    }
+
+    public long getMoney() {
+        return money;
     }
 }

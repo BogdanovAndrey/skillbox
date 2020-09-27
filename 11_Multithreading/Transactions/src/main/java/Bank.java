@@ -6,7 +6,7 @@ import java.util.Random;
 public class Bank {
     private HashMap<String, Account> accounts = new HashMap<>();
     private final Random random = new Random();
-
+    private final boolean defaultAccountStatus = false;
 
     public synchronized boolean isFraud(String fromAccountNum, String toAccountNum, long amount)
             throws InterruptedException {
@@ -21,13 +21,30 @@ public class Bank {
      * метод isFraud. Если возвращается true, то делается блокировка
      * счетов (как – на ваше усмотрение)
      */
-    public void transfer(String fromAccountNum, String toAccountNum, long amount) throws InterruptedException {
-        if (amount > 50000 && isFraud(fromAccountNum, toAccountNum, amount)) {
-            accounts.get(fromAccountNum).block();
-            accounts.get(toAccountNum).block();
+    public TransferResult transfer(String fromAccountNum, String toAccountNum, long amount) throws InterruptedException {
+        Account from = accounts.get(fromAccountNum);
+        Account to = accounts.get(toAccountNum);
+
+        if (!from.isBlocked() && !to.isBlocked()) {
+            if (amount > 50000 && isFraud(fromAccountNum, toAccountNum, amount)) {
+                from.block();
+                to.block();
+                return TransferResult.FRAUD;
+            } else {
+                from.decMoney(amount);
+                to.addMoney(amount);
+                return TransferResult.OK;
+            }
         } else {
-            accounts.get(fromAccountNum).decMoney(amount);
-            accounts.get(toAccountNum).addMoney(amount);
+            if (from.isBlocked()&&to.isBlocked()){
+                return TransferResult.BOTH_BLOCKED;
+            } else {
+                if (from.isBlocked()){
+                    return TransferResult.FIRST_BLOCKED;
+                } else {
+                    return TransferResult.SECOND_BLOCKED;
+                }
+            }
         }
     }
 
@@ -44,4 +61,14 @@ public class Bank {
                 .map(Account::getMoney)
                 .reduce(Long::sum).orElseThrow();
     }
+
+    public void addAccount(String accountNum, long money) {
+        accounts.put(accountNum, new Account(money, accountNum, defaultAccountStatus));
+    }
+
+    public Account getAccount(String accountNum) {
+        return accounts.get(accountNum);
+    }
+
+
 }
