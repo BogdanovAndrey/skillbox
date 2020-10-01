@@ -12,11 +12,11 @@ public class Main {
         for (int i = 1; i <= accNum; i++) {
             myBank.addAccount(String.valueOf(i), random.nextInt(maxMoney));
         }
-
+        myBank.getAccount("101");
         for (int i = 0; i < accNum; i++) {
             transfers.add(new Thread(new Transfer(
                     myBank,
-                    random,
+                    random.nextInt((int) myBank.getBalance(String.valueOf(i + 1))),
                     String.valueOf(i + 1),
                     String.valueOf(random.nextInt(accNum)+1))));
         }

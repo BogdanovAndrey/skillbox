@@ -1,12 +1,12 @@
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
 public class Bank {
-    private HashMap<String, Account> accounts = new HashMap<>();
+    private final HashMap<String, Account> accounts = new HashMap<>();
     private final Random random = new Random();
-    private final boolean defaultAccountStatus = false;
 
     public synchronized boolean isFraud(String fromAccountNum, String toAccountNum, long amount)
             throws InterruptedException {
@@ -22,24 +22,24 @@ public class Bank {
      * счетов (как – на ваше усмотрение)
      */
     public TransferResult transfer(String fromAccountNum, String toAccountNum, long amount) throws InterruptedException {
-        Account from = accounts.get(fromAccountNum);
-        Account to = accounts.get(toAccountNum);
+        Account source = accounts.get(fromAccountNum);
+        Account receiver = accounts.get(toAccountNum);
 
-        if (!from.isBlocked() && !to.isBlocked()) {
+        if (!source.isBlocked() && !receiver.isBlocked()) {
             if (amount > 50000 && isFraud(fromAccountNum, toAccountNum, amount)) {
-                from.block();
-                to.block();
+                source.block();
+                receiver.block();
                 return TransferResult.FRAUD;
             } else {
-                from.decMoney(amount);
-                to.addMoney(amount);
+                source.decMoney(amount);
+                receiver.addMoney(amount);
                 return TransferResult.OK;
             }
         } else {
-            if (from.isBlocked()&&to.isBlocked()){
+            if (source.isBlocked() && receiver.isBlocked()) {
                 return TransferResult.BOTH_BLOCKED;
             } else {
-                if (from.isBlocked()){
+                if (source.isBlocked()) {
                     return TransferResult.FIRST_BLOCKED;
                 } else {
                     return TransferResult.SECOND_BLOCKED;
@@ -63,6 +63,7 @@ public class Bank {
     }
 
     public void addAccount(String accountNum, long money) {
+        boolean defaultAccountStatus = false;
         accounts.put(accountNum, new Account(money, accountNum, defaultAccountStatus));
     }
 
@@ -70,5 +71,8 @@ public class Bank {
         return accounts.get(accountNum);
     }
 
+    public Map<String,Account> getAccounts(){
+        return accounts;
+    }
 
 }
