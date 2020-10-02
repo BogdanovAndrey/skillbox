@@ -3,5 +3,7 @@ public enum TransferResult {
     FIRST_BLOCKED,
     SECOND_BLOCKED,
     BOTH_BLOCKED,
-    FRAUD
+    FRAUD,
+    INTERRUPTED,
+    NOT_ENOUGH_MONEY
 }

@@ -21,30 +21,37 @@ public class Bank {
      * метод isFraud. Если возвращается true, то делается блокировка
      * счетов (как – на ваше усмотрение)
      */
-    public TransferResult transfer(String fromAccountNum, String toAccountNum, long amount) throws InterruptedException {
+    public TransferResult transfer(String fromAccountNum, String toAccountNum, long amount) {
         Account source = accounts.get(fromAccountNum);
         Account receiver = accounts.get(toAccountNum);
-
-        if (!source.isBlocked() && !receiver.isBlocked()) {
-            if (amount > 50000 && isFraud(fromAccountNum, toAccountNum, amount)) {
-                source.block();
-                receiver.block();
-                return TransferResult.FRAUD;
-            } else {
-                source.decMoney(amount);
-                receiver.addMoney(amount);
-                return TransferResult.OK;
-            }
-        } else {
-            if (source.isBlocked() && receiver.isBlocked()) {
-                return TransferResult.BOTH_BLOCKED;
-            } else {
-                if (source.isBlocked()) {
-                    return TransferResult.FIRST_BLOCKED;
+        try {
+            if (!source.isBlocked() && !receiver.isBlocked()) {
+                if (amount > 50000 && isFraud(fromAccountNum, toAccountNum, amount)) {
+                    source.block();
+                    receiver.block();
+                    return TransferResult.FRAUD;
                 } else {
-                    return TransferResult.SECOND_BLOCKED;
+                    source.decMoney(amount);
+                    receiver.addMoney(amount);
+                    return TransferResult.OK;
+                }
+            } else {
+                if (source.isBlocked() && receiver.isBlocked()) {
+                    return TransferResult.BOTH_BLOCKED;
+                } else {
+                    if (source.isBlocked()) {
+                        return TransferResult.FIRST_BLOCKED;
+                    } else {
+                        return TransferResult.SECOND_BLOCKED;
+                    }
                 }
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return TransferResult.INTERRUPTED;
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return TransferResult.NOT_ENOUGH_MONEY;
         }
     }
 
@@ -63,15 +70,14 @@ public class Bank {
     }
 
     public void addAccount(String accountNum, long money) {
-        boolean defaultAccountStatus = false;
-        accounts.put(accountNum, new Account(money, accountNum, defaultAccountStatus));
+        accounts.put(accountNum, new Account(money, accountNum, AccountStatus.UNBLOCKED));
     }
 
     public Account getAccount(String accountNum) {
         return accounts.get(accountNum);
     }
 
-    public Map<String,Account> getAccounts(){
+    private Map<String, Account> getAccounts() {
         return accounts;
     }
 

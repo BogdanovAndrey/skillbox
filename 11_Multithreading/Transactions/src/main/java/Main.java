@@ -21,6 +21,6 @@ public class Main {
                     String.valueOf(random.nextInt(accNum)+1))));
         }
         transfers.forEach(Thread::start);
-        System.out.println("complete");
+
     }
 }

@@ -1,36 +1,45 @@
 import lombok.AllArgsConstructor;
-import lombok.Data;
 
 @AllArgsConstructor
 public class Account {
     private long money;
     private final String accNumber;
-    private boolean status;
+    private AccountStatus status;
 
     public synchronized void addMoney(long modMoney) {
         money += modMoney;
+
     }
 
-    public synchronized void decMoney(long modMoney) {
-        money -= modMoney;
+    public synchronized void decMoney(long modMoney) throws IllegalArgumentException {
+        if (money >= modMoney) {
+            money -= modMoney;
+        } else {
+            throw new IllegalArgumentException("Недостаточно средств");
+        }
     }
 
     public boolean isBlocked() {
-        return status;
+        return status == AccountStatus.BLOCKED;
     }
 
     public synchronized void block() {
-        status = true;
+        status = AccountStatus.BLOCKED;
     }
 
     public synchronized void unblock() {
-        status = false;
+        status = AccountStatus.UNBLOCKED;
     }
 
     public long getMoney() {
         return money;
     }
-    public void setMoney(long money){
+
+    private void setMoney(long money) {
         this.money = money;
+    }
+
+    public String getName() {
+        return accNumber;
     }
 }
