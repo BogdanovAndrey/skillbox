@@ -1,42 +1,51 @@
 package util;
 
-import com.sun.source.tree.Tree;
+import lombok.SneakyThrows;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.RecursiveTask;
 
-public class TreeMapper extends RecursiveTask<Node> {
-    final Node node;
-    public TreeMapper (Node node) {
-        this.node = node;
+public class TreeMapper extends RecursiveTask<SortedSet<String>> {
+    SortedSet<String> links;
+    final String url;
+
+    public TreeMapper(String url, SortedSet<String> links) {
+        this.url = url;
+        this.links = links;
     }
+
+    @SneakyThrows
     @Override
-    protected Node compute() {
-        Node retNode;
-        String[] rawText = node.getText().split("/",2);
+    protected SortedSet<String> compute() {
+        Thread.sleep(150);
+        Document page = Jsoup.connect(url).get();
+        Elements rawLinks = page.select("a[abs:href]");
 
-                List<TreeMapper> subTasks = new LinkedList<>();
+        boolean newStringsAdded = false;
+        for(Element el: rawLinks){
+            String link = el.attr("abs:href");
+            if (link.contains("https://lenta.ru")) {
+                newStringsAdded = links.add(link);
+            }
+        }
+            if (!newStringsAdded){
+                return null;
+            }
+        List<TreeMapper> subTasks = new LinkedList<>();
 
-        for(Node child : node.getChildren()) {
-            ValueSumCounter task = new ValueSumCounter(child);
+        for (String link : links) {
+            TreeMapper task = new TreeMapper(link, links);
             task.fork(); // запустим асинхронно
             subTasks.add(task);
         }
 
-        for(ValueSumCounter task : subTasks) {
-            sum += task.join(); // дождёмся выполнения задачи и прибавим результат
+        for (TreeMapper task : subTasks) {
+            links.addAll(task.join()); // дождёмся выполнения задачи и прибавим результат
         }
-
-        return sum;
-        return null;
-    }
-    static long aVeryBigSum(long[] ar) {
-        long result;
-        for(long dig:ar){
-
-        }
-
+        return links;
     }
 }
