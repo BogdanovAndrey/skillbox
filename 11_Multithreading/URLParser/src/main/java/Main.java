@@ -16,7 +16,7 @@ public class Main {
         try {
             SortedSet<String> siteMap = Collections.synchronizedSortedSet(new TreeSet<String>());
 
-            new ForkJoinPool().invoke(new SiteMapper(mainPage, siteMap));
+            new ForkJoinPool().invoke(new SiteMapper(mainPage, mainPage, siteMap));
 
 
             Files.deleteIfExists(file);

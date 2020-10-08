@@ -13,10 +13,12 @@ import java.util.SortedSet;
 import java.util.concurrent.RecursiveAction;
 
 public class SiteMapper extends RecursiveAction {
+    final String domain;
     SortedSet<String> links;
     final String url;
 
-    public SiteMapper(String url, SortedSet<String> links) {
+    public SiteMapper(String domain, String url, SortedSet<String> links) {
+        this.domain = domain;
         this.url = url;
         this.links = links;
     }
@@ -52,7 +54,7 @@ public class SiteMapper extends RecursiveAction {
         List<SiteMapper> subTasks = new LinkedList<>();
 
         for (String link : links) {
-            SiteMapper task = new SiteMapper(link, links);
+            SiteMapper task = new SiteMapper(domain, link, links);
             task.fork(); // запустим асинхронно
             subTasks.add(task);
         }
@@ -63,7 +65,8 @@ public class SiteMapper extends RecursiveAction {
     }
 
     private boolean validLink(String link) {
-        return (link.contains("https://lenta.ru")
-                || !);
+        return (link.startsWith(domain)
+                && !link.contains(".pdf")
+                && !link.contains(".xls"));
     }
 }
