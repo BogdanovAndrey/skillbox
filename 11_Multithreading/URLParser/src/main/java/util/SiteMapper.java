@@ -9,15 +9,15 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.SortedSet;
+import java.util.Set;
 import java.util.concurrent.RecursiveAction;
 
 public class SiteMapper extends RecursiveAction {
     final String domain;
-    SortedSet<String> links;
+    Set<String> links;
     final String url;
 
-    public SiteMapper(String domain, String url, SortedSet<String> links) {
+    public SiteMapper(String domain, String url, Set<String> links) {
         this.domain = domain;
         this.url = url;
         this.links = links;
@@ -36,7 +36,7 @@ public class SiteMapper extends RecursiveAction {
             for (Element el : rawLinks) {
                 String link = el.attr("abs:href");
                 if (validLink(link)) {
-                    newStringsAdded = links.add(link);
+                    newStringsAdded = addLink(link, links);
                 }
             }
             if (!newStringsAdded) {
@@ -68,5 +68,20 @@ public class SiteMapper extends RecursiveAction {
         return (link.startsWith(domain)
                 && !link.contains(".pdf")
                 && !link.contains(".xls"));
+    }
+
+    private boolean addLink(String link, Set<String> map) {
+        boolean update = false;
+        String tail = link.replaceFirst(domain, "");
+        String[] subLinks = tail.split("/");
+        StringBuilder newLink = new StringBuilder(domain);
+        for (String s : subLinks) {
+            if (!s.isEmpty()) {
+                newLink.append(s);
+            }
+            newLink.append("/");
+            update = map.add(newLink.toString());
+        }
+        return update;
     }
 }
