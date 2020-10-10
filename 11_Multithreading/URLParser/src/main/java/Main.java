@@ -10,7 +10,7 @@ import java.util.concurrent.ForkJoinPool;
 
 public class Main {
     final static Path file = Path.of("src/main/resources/output.txt").toAbsolutePath();
-    final static String mainPage = "https://skillbox.ru/";
+    final static String mainPage = "https://lenta.ru/";
     public static void main(String[] args) {
         try {
             Set<String> siteMap = new TreeSet<String>();
