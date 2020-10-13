@@ -5,31 +5,28 @@
     <title>ToDoList by BAU</title>
     <!--    <script src="/js/jquery-3.4.0.min.js"></script>-->
     <!--    <script src="/js/main.js"></script>-->
-    <link href="/css/styles.css" rel="stylesheet">
+    <link href="../static/styles.css" rel="stylesheet">
 </head>
 <body>
-<!--<div id="book-form">-->
-<!--    <form>-->
-<!--        <h2>Добавление книги</h2>-->
-<!--        <label>Название книги:</label>-->
-<!--        <input type="text" name="name" value="">-->
-<!--        <label>Год выпуска:</label>-->
-<!--        <input type="text" name="year" value="">-->
-<!--        <hr>-->
-<!--        <button id="save-book">Сохранить</button>-->
-<!--    </form>-->
-<!--</div>-->
-<!--   <h1>Планировщик задач</h1>-->
-<!--<button id="show-add-book-form">Добавить книгу</button>-->
-<!--<br><br>-->
-<!--<div id="book-list">-->
-<!--    <div th:each="book : ${books}">-->
-<!--        <a href="#" class="book-link" th:attr="data-id=${book.id}" th:text="${book.name}"></a>-->
-<!--    </div>-->
-<!--</div>-->
-<!--<p th:text="${someParameter}"></p>-->
-
-<img src="E:\Photo\varya.jpg">
+<div id="add-task-form">
+    <form>
+        <h2>Добавление новой задачи</h2>
+        <label>Краткое описание задачи</label>
+        <input name="short-name" type="text" value="">
+        <label>Подробное описание:</label>
+        <input name="description" type="text" value="">
+        <hr>
+        <button id="save-task">Сохранить</button>
+    </form>
+</div>
+<h1>Планировщик задач</h1>
+<button id="show-add-book-form">Добавить задачу</button>
+<br><br>
+<!-- <div id="book-list">
+    <div th:each="book : ${books}">
+        <a href="#" class="book-link" th:attr="data-id=${book.id}" th:text="${book.name}"></a>
+    </div>
+</div> -->
 
 </body>
 </html>
