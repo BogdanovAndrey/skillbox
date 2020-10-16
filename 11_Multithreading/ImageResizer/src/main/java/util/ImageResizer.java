@@ -7,20 +7,20 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 @Data
-public abstract class AbstractResizer implements Runnable {
+public class ImageResizer implements Runnable {
     File[] input;
     String dstFolder;
     int newWidth;
+    ResizeMethod expression;
 
 
-
-    AbstractResizer(File[] input, String dstFolder, int newWidth) {
+    public ImageResizer(File[] input, String dstFolder, int newWidth, ResizeMethod expression) {
         this.input = input;
         this.dstFolder = dstFolder;
         this.newWidth = newWidth;
+        this.expression = expression;
     }
 
-    abstract BufferedImage resizeMethod(BufferedImage image, int height);
 
     public void run() {
         try {
@@ -35,7 +35,7 @@ public abstract class AbstractResizer implements Runnable {
                         image.getHeight() / (image.getWidth() / (double) newWidth)
                 );
 
-                BufferedImage newImage = resizeMethod(image, newHeight);
+                BufferedImage newImage = expression.resizeMethod(image, newHeight, newWidth);
 
                 image.flush();
 
