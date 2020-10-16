@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>ToDoList by BAU</title>
-    <script src="/js/jquery-3.4.0.min.js"></script>
-    <script src="/js/main.js"></script>
-    <link href="/css/styles.css" rel="stylesheet">
+    <script src="js/jquery-3.4.0.min.js"></script>
+    <script src="js/main.js"></script>
+    <link href="css/styles.css" rel="stylesheet">
 </head>
 <body>
 <div id="add-task-form">
     <form>
+        <button id="close-form">Х</button>
         <h2>Добавление новой задачи</h2>
         <label>Краткое описание задачи</label>
-        <input name="name" type="text" value="">
+        <input name="name" placeholder="Введите краткое описание задачи" type="text" value="">
         <label>Подробное описание:</label>
-        <input name="description" type="text" value="">
+        <textarea name="description" placeholder="Введите подробное описание задачи" rows="15"> </textarea>
         <hr>
         <button id="save-task">Сохранить</button>
     </form>
@@ -22,11 +23,11 @@
 <h1>Планировщик задач</h1>
 <button id="show-add-task-form">Добавить задачу</button>
 <br><br>
-<!-- <div id="book-list">
-    <div th:each="book : ${books}">
-        <a href="#" class="book-link" th:attr="data-id=${book.id}" th:text="${book.name}"></a>
-    </div>
-</div> -->
+<div id="book-list">
+<!--    <div th:each="book : ${books}">-->
+<!--        <a href="#" class="book-link" th:attr="data-id=${book.id}" th:text="${book.name}"></a>-->
+<!--    </div>-->
+</div>
 
 </body>
 </html>

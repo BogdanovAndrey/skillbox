@@ -4,7 +4,7 @@
 
 h1 {
     align-items:center;
-    color: black;
+    color: blue;
     font-family: sans-serif;
 }
 
@@ -21,22 +21,38 @@ h1 {
     background-color: #88888878;
 }
 
-#book-form form {
+#add-task-form form {
     background-color: white;
     border: 1px solid #333;
     width: 300px;
     padding: 20px;
 }
 
-#book-form h2 {
+#add-task-form h2 {
     margin-top: 0;
 }
 
-#book-form label {
+#add-task-form label {
     display: block;
 }
+#add-task-form input {
+    margin: 5px;
+    padding: 10px;
+    width: -webkit-fill-available;
+}
+#add-task-form #close-form {
+    float: right;
+}
+#add-task-form textarea {
+    background-color: white;
+    border: 1px solid #333;
+    margin: 5px;
+    padding: 10px;
+    width: -webkit-fill-available;
+}
 
-#book-form form > * {
+
+#add-task-form form > * {
     margin-bottom: 5px;
 }
 
