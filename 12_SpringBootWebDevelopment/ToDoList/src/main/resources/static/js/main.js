@@ -10,27 +10,27 @@ $(function(){
             .append(taskCode);
     };
 
-    //Loading tasks on load page
-    function gatAll() {
-    $.get('/tasks/', function(response)
-    {
-        for(i in response) {
-            appendTask(response[i]);
-        }
-    });}
+//    //Loading tasks on load page
+//    function getAll() {
+//    $.get('/tasks/', function(response)
+//    {
+//        for(i in response) {
+//            appendTask(response[i]);
+//        }
+//    });}
 
-    function showForm(){
-            $('#add-task-form').css('display', 'flex');
-        }
 
     //Show adding task form
-    $('#show-add-task-form').click(showForm());
+    $('#show-add-task-form').click(function(){
+        $('#add-task-form').css('display', 'flex');
+        return false;
+    });
 
     //Closing adding task form
-    $('#add-task-form').click(function(event){
-        if(event.target === this) {
-            $(this).css('display', 'none');
-        }
+    $('.close-form').click(function(event){
+
+        $(this).parent().parent().css('display', 'none');
+        return false;
     });
 
 
@@ -53,7 +53,7 @@ $(function(){
                     task[dataArray[i]['name']] = dataArray[i]['value'];
                 }
                 appendTask(task);
-                $('#add-task-form form').trigger("reset");;
+                $('#add-task-form form').trigger("reset");
             }
         });
         return false;
@@ -76,16 +76,37 @@ $(function(){
     //Changing task
     $(document).on('click', '.change-task', function()
     {
-        showForm();
-        $(#add-task-form )
         var taskId = parseInt($(this).attr("id").match(/\d+/));
-        var divId = "#task" + taskId;
+        var shortName = $(this).siblings("h3").text();
+        var description = $(this).siblings("p").text();
+
+        $('#change-task-form').css('display', 'flex');
+        $("#change-task-form").find("input").val(shortName);
+        $('#change-task-form').find('textarea').text(description);
+        $('#change-task-form').find('p').text(taskId);
+        return false;
+});
+    //Save changes
+        $(document).on('click', '#change-task', function()
+        {
+
+        var data = $('#change-task-form form').serialize();
+        var taskId = $('#change-task-form').find('p').text();
         $.ajax({
-            method: "POST",
+            method: "PUT",
             url: '/tasks/'+taskId,
-            data: taskId,
-            success: function(){
-                $(divId).remove();
+            data: data,
+            success: function(response){
+
+                var taskId = response;
+
+                $('#change-task-form').css('display', 'none');
+                var data = $('#change-task-form form').serializeArray();
+                var shortName = data[0].value;
+                var description = data[1].value;
+                $("#task"+taskId).find("h3").text("" + shortName);
+                $("#task"+taskId).find("p").text(description.toString());
+                $('#change-task-form form').trigger("reset");
             }
         });
         return false;

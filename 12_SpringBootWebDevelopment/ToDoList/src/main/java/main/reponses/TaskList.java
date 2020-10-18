@@ -41,23 +41,12 @@ public class TaskList {
         }
     }
 
-    public static boolean updateTaskName(int id, String name) {
+    public static boolean updateTask(int id, Task task) {
         if (taskList.containsKey(id)) {
-            Task task = taskList.get(id);
-            task.setName(name);
             taskList.put(id, task);
             return true;
         }
         return false;
     }
 
-    public static boolean updateTaskDescription(int id, String description) {
-        if (taskList.containsKey(id)) {
-            Task task = taskList.get(id);
-            task.setDescription(description);
-            taskList.put(id, task);
-            return true;
-        }
-        return false;
-    }
 }

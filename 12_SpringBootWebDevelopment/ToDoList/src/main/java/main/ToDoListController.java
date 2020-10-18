@@ -47,18 +47,12 @@ public class ToDoListController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    @PutMapping("/tasks/{id}/{name}")
-    public ResponseEntity updateTaskName(@PathVariable int id, @PathVariable String name) {
-        if (!TaskList.updateTaskName(id, name)) {
+    @PutMapping("/tasks/{id}")
+    public ResponseEntity updateTask(@PathVariable int id, Task task) {
+        if (!TaskList.updateTask(id, task)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(id);
     }
-    /*@PutMapping("/tasks/{id}/{desciption}")
-    public ResponseEntity updateTaskDescription(@PathVariable int id, @PathVariable String desciption){
-        if(!TaskList.updateTaskName(id, desciption)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(null);
-    }*/
+
 }

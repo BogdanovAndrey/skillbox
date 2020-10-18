@@ -11,7 +11,7 @@
 <body>
 <div id="add-task-form">
     <form>
-        <button id="close-form">X</button>
+        <button class="close-form">X</button>
         <h2>Добавление новой задачи</h2>
         <label>Краткое описание задачи</label>
         <input name="name" type="text" value="">
@@ -22,15 +22,16 @@
     </form>
 </div>
 <div id="change-task-form">
+    <p id="taskId"></p>
     <form>
-        <button id="close-form">X</button>
+        <button class="close-form">X</button>
         <h2>Добавление новой задачи</h2>
         <label>Краткое описание задачи</label>
         <input name="name" type="text" value="">
         <label>Подробное описание:</label>
         <textarea name="description"> </textarea>
         <hr>
-        <button id="save-task">Сохранить</button>
+        <button id="change-task">Сохранить</button>
     </form>
 </div>
 <h1>Планировщик задач</h1>
