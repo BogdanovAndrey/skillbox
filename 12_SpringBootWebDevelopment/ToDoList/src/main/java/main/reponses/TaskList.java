@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TaskList {
+    private static int id = 0;
     private static final Map<Integer, Task> taskList = new ConcurrentHashMap<Integer, Task>();
 
     public static List<Task> getTaskList() {
@@ -26,8 +27,7 @@ public class TaskList {
     }
 
     public static int addTask(Task task) {
-        int id = taskList.size() + 1;
-        task.setId(id);
+        task.setId(++id);
         taskList.put(id, task);
         return id;
     }
