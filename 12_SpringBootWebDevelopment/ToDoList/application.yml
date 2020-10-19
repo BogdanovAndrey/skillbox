@@ -1,0 +1,4 @@
+spring.datasource.url: jdbc:mysql://localhost:3306/tasklist?serverTimezone=UTC
+spring.datasource.username: BogdAn
+spring.datasource.password: Testtest123
+spring.jpa.hibernate.ddl-auto: update
