@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>ToDoList by BAU</title>
@@ -39,8 +39,16 @@
 <button id="delete-all-tasks">Очистить список задач</button>
 <br><br>
 <div id="task-list">
-    <!--    <div th:each="book : ${books}">-->
-    <!--        <a href="#" class="book-link" th:attr="data-id=${book.id}" th:text="${book.name}"></a>-->
+    <div th:each="task : ${tasks}">
+        <div class="task-card" th:id="task + ${task.id}">
+            <input alt="Кнопка «Удалить»" class="delete-task" src="img/close-img.png" type="image">
+            <input alt="Кнопка «Настройки»" class="change-task" src="img/settings-logo.png" type="image">
+            <h3 th:text=${task.name}></h3>
+            <hr>
+            <p th:text=${task.description}></p>
+            <br>
+        </div>
+    </div>
 </div>
 </body>
 </html>

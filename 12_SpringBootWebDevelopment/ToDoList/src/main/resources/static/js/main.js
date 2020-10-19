@@ -61,7 +61,7 @@ $(function(){
     //Deleting task
     $(document).on('click', '.delete-task', function()
     {
-        var taskId = parseInt($(this).attr("id").match(/\d+/));
+        var taskId = parseInt($(this).parent().attr("id").match(/\d+/));
         var divId = "#task" + taskId;
         $.ajax({
             method: "DELETE",
@@ -76,7 +76,7 @@ $(function(){
     //Changing task
     $(document).on('click', '.change-task', function()
     {
-        var taskId = parseInt($(this).attr("id").match(/\d+/));
+        var taskId = parseInt($(this).parent().attr("id").match(/\d+/));
         var shortName = $(this).siblings("h3").text();
         var description = $(this).siblings("p").text();
 
