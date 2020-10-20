@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class TaskController {
@@ -66,4 +68,16 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedTask.getId());
     }
 
+    @PutMapping("/tasks/")
+    public ResponseEntity updateTasks(List<Task> tasks) {
+        Map<String, Integer> updateStatus = new HashMap<>(2);
+
+        int updated = 0, added = 0;
+        if (tasks == null || tasks.size() == 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        taskRepository.saveAll(tasks);
+
+        return ResponseEntity.status(HttpStatus.OK).body(tasks.size());
+    }
 }
