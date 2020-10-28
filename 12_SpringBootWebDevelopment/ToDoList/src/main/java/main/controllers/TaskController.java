@@ -1,4 +1,4 @@
-package main;
+package main.controllers;
 
 import main.model.Task;
 import main.model.TaskRepository;
@@ -35,7 +35,6 @@ public class TaskController {
 
     @GetMapping("/tasks/{id}")
     public ResponseEntity<Task> get(@PathVariable int id) {
-
         Task task = taskRepository.findById(id).orElse(null);
         if (task == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -69,9 +68,8 @@ public class TaskController {
     }
 
     @PutMapping("/tasks/")
-    public ResponseEntity updateTasks(List<Task> tasks) {
+    public ResponseEntity updateTasks(@RequestBody List<Task> tasks) {
         Map<String, Integer> updateStatus = new HashMap<>(2);
-
         int updated = 0, added = 0;
         if (tasks == null || tasks.size() == 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

@@ -1,5 +1,6 @@
-package main;
+package main.ControllerTests;
 
+import main.controllers.DefaultController;
 import main.model.TaskRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
