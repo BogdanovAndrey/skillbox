@@ -133,7 +133,8 @@ public class TaskControllerTest {
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(taskList)))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(String.valueOf(taskList.size()))));
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
+
 
         //Тест обновления (неправильный)
         mockMvc.perform(put("/tasks/")
