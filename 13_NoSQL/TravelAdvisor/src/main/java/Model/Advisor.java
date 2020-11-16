@@ -5,12 +5,8 @@ import lombok.Data;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
-
-import static Model.util.CityCodeDB.getCityCode;
 
 @Data
 public class Advisor {
@@ -28,9 +24,8 @@ public class Advisor {
     final String TOKEN;
     final String ORIGIN;
 
-    TreeMap<String,Integer> cityList = new TreeMap<String, Integer>();
 
-    public Advisor(String originCity ) throws IOException {
+    public Advisor(String originCityCode) throws IOException {
         Properties props = new Properties();
         props.load(Files.newInputStream(Path.of("src/main/resources/token.yml")));
         TOKEN = props.getProperty("token");
@@ -40,15 +35,11 @@ public class Advisor {
                     return entry.getKey().toString() + entry.getValue().toString();
                 })
                 .collect(Collectors.joining("&"));
-        ORIGIN = getCityCode(originCity);
+        ORIGIN = originCityCode;
     }
 
-    public TreeMap<String,Integer> parseResponse (String jsonResponse){
 
-        return cityList;
-    }
-
-    public void getDataFromServer (String startPoint, HashSet<String> cities){
+    public void getDataFromServer(String destinationPoint) {
 
     }
 }

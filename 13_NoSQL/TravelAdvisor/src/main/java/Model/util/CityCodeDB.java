@@ -10,36 +10,41 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 public class CityCodeDB {
-    final static String CITY_NAME_DB_HOST = "http://api.travelpayouts.com/data/ru/cities.json";
-    final static Path RESULT_FILE = Paths.get("src/main/resources/cityCodes.txt");
-    static Map<CityName, String> cityCodes = readFromFile();
+    private static final String CITY_NAME_DB_HOST = "http://api.travelpayouts.com/data/ru/cities.json";
+    private static final Map<String, String> cityCodes = new HashMap<>();
+    private static final Map<String, String> cityDictionary = new HashMap<>();
 
-
-    public static String getCityCode(String cityName) throws IOException {
-        if (cityCodes == null) {
-            cityCodes = getJsonData();
-            writeToFile(cityCodes);
+    public static String getCityCode(String cityName) throws IOException, IllegalAccessException {
+        if (cityCodes.isEmpty() || cityDictionary.isEmpty()) {
+            getJsonData();
         }
 
         return getCodeFromResult(cityName);
     }
 
-    private static String getCodeFromResult(String cityName) {
-        System.out.println(cityCodes.containsKey(new CityName(cityName,null)));
-        return null;
+    private static String getCodeFromResult(String cityName) throws IllegalAccessException {
+        if (isCyrillic(cityName)) {
+            cityName = cityDictionary.getOrDefault(cityName, null);
+        }
+        String code = cityCodes.getOrDefault(cityName, null);
+        if (code == null) {
+            throw new IllegalArgumentException("Город не найден.");
+        }
+        return code;
     }
 
-    private static Map<CityName, String> getJsonData() throws IOException {
+    /*
+     * Метод получает данные из базы кодов городов
+     *  и передает сырые данные для заполнения двух таблиц:
+     * 1) Английское имя города - код;
+     * 2) Русское имя города - английское имя города.
+     */
+    private static void getJsonData() throws IOException {
         URL url = new URL(CITY_NAME_DB_HOST);
         URLConnection request = url.openConnection();
         request.connect();
@@ -48,21 +53,23 @@ public class CityCodeDB {
         JsonParser jp = new JsonParser(); //from gson
         JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
 
-
-        return parseResponse(root.getAsJsonArray());
+        parseResponse(root.getAsJsonArray());
     }
 
-    private static Map<CityName, String> parseResponse(JsonArray array) {
-        Map<CityName, String> data = new HashMap<>();
+
+    private static void parseResponse(JsonArray array) {
         array.forEach(el -> {
             JsonObject entry = el.getAsJsonObject();
             String ruName = getStringFromJson("name", entry);
             JsonObject translations = entry.get("name_translations").getAsJsonObject();
             String enName = getStringFromJson("en", translations);
             String code = getStringFromJson("code", entry);
-            data.put(new CityName(ruName, enName), code);
+            cityCodes.put(enName, code);
+            if (!ruName.isBlank()) {
+                cityDictionary.put(ruName, enName);
+            }
         });
-        return data;
+
     }
 
     private static String getStringFromJson(String par, JsonObject obj) {
@@ -71,35 +78,8 @@ public class CityCodeDB {
                 obj.get(par).getAsString();
     }
 
-    private static void writeToFile(Map<CityName, String> result) throws IOException {
-
-        Files.deleteIfExists(RESULT_FILE);
-
-        result.forEach((cityName, s) -> {
-            String entry = "ruName/" + cityName.getRuName() +
-                    "/enName/" + cityName.getEnName() +
-                    "/code/" + s + "\n";
-            try {
-                Files.writeString(RESULT_FILE, entry, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    private static Map<CityName, String> readFromFile() {
-        Map<CityName, String> result;
-        try {
-            result = Files.readAllLines(RESULT_FILE).stream()
-                    .map(s -> s.split("/"))
-                    .collect(Collectors.toMap(
-                            strings -> new CityName(strings[1], strings[3]),
-                            strings -> strings[5]
-                    ));
-        } catch (IOException e) {
-            result = null;
-        }
-        return result;
+    private static boolean isCyrillic(String s) {
+        return Pattern.matches("[а-яА-ЯёЁ\\d\\s\\p{Punct}]*", s);
     }
 
 }
