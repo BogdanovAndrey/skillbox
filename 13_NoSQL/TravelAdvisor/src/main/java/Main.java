@@ -7,6 +7,8 @@ import java.util.Scanner;
 public class Main {
     final static int CITY_COUNT = 3;
     final static int OUTPUT_COUNT = 3;
+    final static RedisStorage storage = new RedisStorage();
+    private static Advisor advisor;
 
     public static void main(String[] args) throws IOException, IllegalAccessException {
 
@@ -17,17 +19,17 @@ public class Main {
         while (origin == null) {
             try {
                 origin = CityCodeDB.getCityCode(getCityFromUser("Введите название города отправления"));
-                Advisor advisor = new Advisor(origin);
+                advisor = new Advisor(origin);
             } catch (IllegalArgumentException ex) {
                 System.out.println("Город не найден. Проверьте ввод или попробуйте ввести название на английском.");
             }
         }
 
-        while (inpCount <= CITY_COUNT) {
+        while (inpCount < CITY_COUNT) {
             try {
                 String city = getCityFromUser("Введите название города");
-
                 inpCount++;
+                storage.storeRoute(city, advisor.getPrice(city));
             } catch (IllegalArgumentException ex) {
                 System.out.println("Город не найден. Проверьте ввод или попробуйте ввести название на английском.");
             } catch (IOException ex) {
@@ -37,8 +39,8 @@ public class Main {
             }
             System.out.println("Введено городов " + inpCount);
         }
-
-
+        storage.listKeys(0, 3);
+        storage.shutdown();
     }
 
 
@@ -49,8 +51,6 @@ public class Main {
         return inp.nextLine();
     }
 
-    private static void putPriceInDB(String cityName) {
 
-    }
 
 }

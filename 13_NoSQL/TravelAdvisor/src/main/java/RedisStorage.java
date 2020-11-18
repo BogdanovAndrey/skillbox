@@ -5,33 +5,22 @@ import org.redisson.api.RedissonClient;
 import org.redisson.client.RedisConnectionException;
 import org.redisson.config.Config;
 
-import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static java.lang.System.out;
 
 public class RedisStorage {
 
-    private final static String KEY = "ONLINE_USERS";
+    private final static String KEY = "TRAVEL_ROUTES";
     // Объект для работы с Redis
     private RedissonClient redisson;
     // Объект для работы с ключами
     private RKeys rKeys;
     // Объект для работы с Sorted Set'ом
-    private RScoredSortedSet<String> onlineUsers;
+    private final RScoredSortedSet<String> citiesList;
 
-    private double getTs() {
-        return new Date().getTime() / 1000;
-    }
-
-    // Пример вывода всех ключей
-    public void listKeys() {
-        Iterable<String> keys = rKeys.getKeys();
-        for (String key : keys) {
-            out.println("KEY: " + key + ", type:" + rKeys.getType(key));
-        }
-    }
-
-    void init() {
+    public RedisStorage() {
         Config config = new Config();
         config.useSingleServer().setAddress("redis://127.0.0.1:6379");
         try {
@@ -41,30 +30,35 @@ public class RedisStorage {
             out.println(Exc.getMessage());
         }
         rKeys = redisson.getKeys();
-        onlineUsers = redisson.getScoredSortedSet(KEY);
-        rKeys.delete(KEY);
+        citiesList = redisson.getScoredSortedSet(KEY);
+        rKeys.deleteByPattern("*");
+    }
+
+    // Вывод выбранного диапазона
+    public Map<String, Double> listKeys(int start, int end) {
+        assert start >= 0;
+        assert end < citiesList.size();
+        LinkedHashMap<String, Double> result = new LinkedHashMap<>(end - start);
+        citiesList.entryRange(start, end).
+                forEach(stringScoredEntry ->
+                        result.put(stringScoredEntry.getValue(),
+                                stringScoredEntry.getScore()));
+        return result;
+    }
+
+    public int size() {
+        return citiesList.size();
     }
 
     void shutdown() {
         redisson.shutdown();
     }
 
-    // Фиксирует посещение пользователем страницы
-    void logPageVisit(int user_id) {
-        //ZADD ONLINE_USERS
-        onlineUsers.add(getTs(), String.valueOf(user_id));
+    // Фиксирует стоимость билета до выбранного города
+    void storeRoute(String city, double price) {
+        //ZADD TRAVEL_ROUTES
+        citiesList.add(price, city);
     }
 
-    // Удаляет
-    void deleteOldEntries(int secondsAgo) {
-        //ZREVRANGEBYSCORE ONLINE_USERS 0 <time_5_seconds_ago>
-        onlineUsers.removeRangeByScore(0, true, getTs() - secondsAgo, true);
 
-
-    }
-
-    int calculateUsersNumber() {
-        //ZCOUNT ONLINE_USERS
-        return onlineUsers.count(Double.NEGATIVE_INFINITY, true, Double.POSITIVE_INFINITY, true);
-    }
 }

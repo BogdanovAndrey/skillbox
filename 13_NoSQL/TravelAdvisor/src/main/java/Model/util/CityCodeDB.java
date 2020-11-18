@@ -3,13 +3,8 @@ package Model.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -19,7 +14,7 @@ public class CityCodeDB {
     private static final Map<String, String> cityCodes = new HashMap<>();
     private static final Map<String, String> cityDictionary = new HashMap<>();
 
-    public static String getCityCode(String cityName) throws IOException, IllegalAccessException {
+    public static String getCityCode(String cityName) throws IOException {
         if (cityCodes.isEmpty() || cityDictionary.isEmpty()) {
             getJsonData();
         }
@@ -27,7 +22,7 @@ public class CityCodeDB {
         return getCodeFromResult(cityName);
     }
 
-    private static String getCodeFromResult(String cityName) throws IllegalAccessException {
+    private static String getCodeFromResult(String cityName) {
         if (isCyrillic(cityName)) {
             cityName = cityDictionary.getOrDefault(cityName, null);
         }
@@ -45,15 +40,8 @@ public class CityCodeDB {
      * 2) Русское имя города - английское имя города.
      */
     private static void getJsonData() throws IOException {
-        URL url = new URL(CITY_NAME_DB_HOST);
-        URLConnection request = url.openConnection();
-        request.connect();
-
-        // Convert to a JSON object to print data
-        JsonParser jp = new JsonParser(); //from gson
-        JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
-
-        parseResponse(root.getAsJsonArray());
+        JsonElement data = DataGrabber.getDataFromServer(CITY_NAME_DB_HOST);
+        parseResponse(data.getAsJsonArray());
     }
 
 

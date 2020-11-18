@@ -1,7 +1,2 @@
 token: 1e5df4bdf7adad9e00b7f80b6e70c496
-requestProperties:
-  currency: rub
-  period_type: month
-  one_way: true
-  limit: 1
-  show_to_affiliates: true
+
