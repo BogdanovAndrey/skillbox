@@ -1,5 +1,7 @@
 package Model.util;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
@@ -14,9 +16,10 @@ public class DataGrabber {
         URL url = new URL(adr);
         URLConnection request = url.openConnection();
         request.connect();
-
+        Gson gson = new GsonBuilder().setLenient().create();
         // Convert to a JSON object to print data
         JsonParser jp = new JsonParser(); //from gson
+
         return jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
     }
 }
