@@ -3,13 +3,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MainTest {
+class MainTest {
 
-    final static RedisStorage storage = new RedisStorage();
+    private final static RedisStorage storage = new RedisStorage();
 
 
     @Test
-    public void test() {
+    void test() {
         storage.storeRoute("Paris", 1);
         storage.storeRoute("Madrid", 2);
         storage.storeRoute("Berlin", 3);

@@ -3,10 +3,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CityCodeDBTest {
+class CityCodeDBTest {
+
 
     @Test
-    public void responseTest() {
+    void responseTest() {
         try {
             assertEquals("MOW", CityCodeDB.getCityCode("Москва"));
             assertEquals("MOW", CityCodeDB.getCityCode("Moscow"));

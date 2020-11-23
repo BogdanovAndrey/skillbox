@@ -5,29 +5,22 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 public class CityCodeDB {
     private static final String CITY_NAME_DB_HOST = "http://autocomplete.travelpayouts.com/places2?";
+    private static final String ENGLISH_NAME = "&locale=en";
+    private static final String RUSSIAN_NAME = "&locale=ru";
 
     public static String getCityCode(String cityName) throws IOException {
-        String local = "&locale=";
-        String encodedCityName;
-        if (isCyrillic(cityName)) {
-            local += "ru";
-            encodedCityName = URLEncoder.encode(cityName, StandardCharsets.UTF_8.toString());
-        } else {
-            local += "en";
-            encodedCityName = cityName;
-        }
 
-        String request = CITY_NAME_DB_HOST + "term=" + encodedCityName + local + "&types[]=city";
-        String testReq = "http://autocomplete.travelpayouts.com/places2?term=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0&locale=ru&types[]=city";
-        System.out.println(testReq.equals(request));
-        JsonElement response = DataGrabber.getDataFromServer(request);
-        JsonArray rawCityCode = response.getAsJsonArray();
+        String request = CITY_NAME_DB_HOST + "term=" + encodeCityName(cityName) + "&types[]=city";
+
+        JsonArray rawCityCode = DataGrabber.getDataFromServer(request).getAsJsonArray();
+
         if (rawCityCode.getAsJsonArray().size() != 0) {
             for (JsonElement el : rawCityCode) {
                 JsonObject entry = el.getAsJsonObject();
@@ -36,13 +29,22 @@ public class CityCodeDB {
                     return entry.get("code").getAsString();
                 }
             }
-
         } else {
-            throw new IOException("Empty response from " + CITY_NAME_DB_HOST + cityName);
+            throw new IOException("Can't find city code in: " + CITY_NAME_DB_HOST + cityName);
         }
 
-
         return null;
+    }
+
+    private static String encodeCityName (String cityName){
+        String encodedCityName;
+
+        if (isCyrillic(cityName)) {
+            encodedCityName =  URLEncoder.encode(cityName, StandardCharsets.UTF_8) + RUSSIAN_NAME;
+        } else {
+            encodedCityName = cityName + ENGLISH_NAME;
+        }
+        return encodedCityName;
     }
 
 //    private static String getCodeFromResult(JsonElement cityName) {

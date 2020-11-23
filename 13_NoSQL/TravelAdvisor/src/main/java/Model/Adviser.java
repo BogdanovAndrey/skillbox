@@ -13,9 +13,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 @Data
-public class Advisor {
+public class Adviser {
     //Пример запроса цен
     //http://api.travelpayouts.com/v1/prices/direct?
     // origin=MOW&
@@ -30,7 +31,7 @@ public class Advisor {
     final String DEPART_DATE;
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(("yyyy-MM"));
 
-    public Advisor(String originCityCode) throws IOException {
+    public Adviser(String originCityCode) throws IOException {
         Properties props = new Properties();
         props.load(Files.newInputStream(Path.of("src/main/resources/token.yml")));
         TOKEN = props.getProperty("token");
@@ -39,22 +40,27 @@ public class Advisor {
     }
 
 
-    public double getPrice(String destinationPoint) throws IOException {
+    public Double getPrice(String destinationPoint) throws IOException {
         String destinationPointCode = CityCodeDB.getCityCode(destinationPoint);
         String request = cheapestTicketRequestBuilder(destinationPointCode);
         JsonElement data = DataGrabber.getDataFromServer(request);
-        TreeMap<Double, Integer> lowesPrice = parseResponse(data, destinationPointCode);
-        return lowesPrice.firstKey();
+        TreeSet<Double> lowestPrice = parseResponse(data, destinationPointCode);
+        return lowestPrice.first();
     }
 
-    TreeMap<Double, Integer> parseResponse(JsonElement data, String destinationPointCode) {
+    TreeSet<Double> parseResponse(JsonElement data, String destinationPointCode) {
+        TreeSet<Double> tickets = new TreeSet<>();
         JsonObject response = data.getAsJsonObject();
         if (response.get("success").getAsString().equals("true")) {
             JsonObject resultList = response.get("data").getAsJsonObject()  //Получили набор направлений
                     .get(destinationPointCode).getAsJsonObject();
-        }
+            for(String s: resultList.keySet()){
+                JsonObject ticketDetails = resultList.get(s).getAsJsonObject();
+                tickets.add(Double.valueOf(ticketDetails.get("price").toString()));
+            }
 
-        return new TreeMap<>();
+        }
+        return tickets;
     }
 
     private String cheapestTicketRequestBuilder(String destinationPointCode) throws IOException {
