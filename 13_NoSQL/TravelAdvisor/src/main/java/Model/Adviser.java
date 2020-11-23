@@ -5,6 +5,7 @@ import Model.util.DataGrabber;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,9 +13,10 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
+
+@Slf4j
 @Data
 public class Adviser {
     //Пример запроса цен
@@ -43,6 +45,7 @@ public class Adviser {
     public Double getPrice(String destinationPoint) throws IOException {
         String destinationPointCode = CityCodeDB.getCityCode(destinationPoint);
         String request = cheapestTicketRequestBuilder(destinationPointCode);
+        log.debug(request);
         JsonElement data = DataGrabber.getDataFromServer(request);
         TreeSet<Double> lowestPrice = parseResponse(data, destinationPointCode);
         return lowestPrice.first();
@@ -52,9 +55,15 @@ public class Adviser {
         TreeSet<Double> tickets = new TreeSet<>();
         JsonObject response = data.getAsJsonObject();
         if (response.get("success").getAsString().equals("true")) {
-            JsonObject resultList = response.get("data").getAsJsonObject()  //Получили набор направлений
-                    .get(destinationPointCode).getAsJsonObject();
-            for(String s: resultList.keySet()){
+
+
+            JsonElement uncheckedResultList = response.get("data").getAsJsonObject()  //Получили набор направлений
+                    .get(destinationPointCode);
+            if (uncheckedResultList.isJsonNull()) {
+                throw new IllegalArgumentException();
+            }
+            JsonObject resultList = uncheckedResultList.getAsJsonObject();
+            for (String s : resultList.getAsJsonObject().keySet()) {
                 JsonObject ticketDetails = resultList.get(s).getAsJsonObject();
                 tickets.add(Double.valueOf(ticketDetails.get("price").toString()));
             }
