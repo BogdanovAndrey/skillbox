@@ -57,7 +57,9 @@ public class RedisStorage {
     // Фиксирует стоимость билета до выбранного города
     void storeRoute(String city, double price) {
         //ZADD TRAVEL_ROUTES
-        citiesList.add(price, city);
+        if (!citiesList.tryAdd(price, city)){
+            throw new IllegalArgumentException("Такой город уже был введен.");
+        }
     }
 
 

@@ -3,6 +3,7 @@ package Model.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -10,6 +11,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
+@Slf4j
 public class CityCodeDB {
     private static final String CITY_NAME_DB_HOST = "http://autocomplete.travelpayouts.com/places2?";
     private static final String ENGLISH_NAME = "&locale=en";
@@ -18,22 +20,20 @@ public class CityCodeDB {
     public static String getCityCode(String cityName) throws IOException {
 
         String request = CITY_NAME_DB_HOST + "term=" + encodeCityName(cityName) + "&types[]=city";
-
+        log.info(request);
         JsonArray rawCityCode = DataGrabber.getDataFromServer(request).getAsJsonArray();
-
+        log.info(rawCityCode.toString());
         if (rawCityCode.getAsJsonArray().size() != 0) {
             for (JsonElement el : rawCityCode) {
                 JsonObject entry = el.getAsJsonObject();
                 String responseCityName = entry.get("name").getAsString();
-                if (responseCityName.equals(cityName)) {
+                if (responseCityName.contains(cityName)) {
                     return entry.get("code").getAsString();
                 }
             }
-        } else {
-            throw new IOException("Can't find city code in: " + CITY_NAME_DB_HOST + cityName);
         }
+        throw new IOException("Не удается найти город. Проверьте правильность ввода.");
 
-        return null;
     }
 
     private static String encodeCityName (String cityName){
@@ -47,37 +47,6 @@ public class CityCodeDB {
         return encodedCityName;
     }
 
-//    private static String getCodeFromResult(JsonElement cityName) {
-//
-//        return code;
-//    }
-
-    /*
-     * Метод получает данные из базы кодов городов
-     *  и передает сырые данные для заполнения двух таблиц:
-     * 1) Английское имя города - код;
-     * 2) Русское имя города - английское имя города.
-     */
-//    private static void getJsonData() throws IOException {
-//        JsonElement data = DataGrabber.getDataFromServer(CITY_NAME_DB_HOST);
-//        parseResponse(data.getAsJsonArray());
-//    }
-
-
-//    private static void parseResponse(JsonArray array) {
-//        array.forEach(el -> {
-//            JsonObject entry = el.getAsJsonObject();
-//            String ruName = getStringFromJson("name", entry);
-//            JsonObject translations = entry.get("name_translations").getAsJsonObject();
-//            String enName = getStringFromJson("en", translations);
-//            String code = getStringFromJson("code", entry);
-//            cityCodes.put(enName, code);
-//            if (!ruName.isBlank()) {
-//                cityDictionary.put(ruName, enName);
-//            }
-//        });
-//
-//    }
 
     private static String getStringFromJson(String par, JsonObject obj) {
         return obj.get(par).isJsonNull() ?

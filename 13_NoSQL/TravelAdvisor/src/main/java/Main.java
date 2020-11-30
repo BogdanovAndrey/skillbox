@@ -8,9 +8,10 @@ import java.util.Scanner;
 
 @Slf4j
 public class Main {
-    final static int CITY_COUNT = 3;
-    final static int OUTPUT_COUNT = 3;
+    final static int CITY_COUNT = 10;
+    final static int OUTPUT_COUNT = 2;
     private static Adviser adviser;
+
 
     public static void main(String[] args) throws IOException, InterruptedException {
         int inpCount = 0;
@@ -25,24 +26,23 @@ public class Main {
                 origin = CityCodeDB.getCityCode(getCityFromUser("Введите название города отправления"));
                 adviser = new Adviser(origin);
             } catch (IllegalArgumentException ex) {
-                System.out.println("Город не найден. Проверьте ввод или попробуйте ввести название на английском.");
+                System.out.println(ex.getMessage());
             }
         }
 
         while (inpCount < CITY_COUNT) {
             try {
                 String city = getCityFromUser("Введите название города");
-                log.debug(city);
                 storage.storeRoute(city, adviser.getPrice(city));
                 inpCount++;
-            } catch (IllegalArgumentException ex) {
-                System.out.println("Данные по данному маршруту не найдены. Проверьте ввод или попробуйте ввести название города на английском.");
-            } catch (IOException ex) {
-                System.out.println("Не удалось получить данные с сервера.");
-            } catch (Exception ex) {
+            } catch (IllegalArgumentException | IOException ex) {
+                System.out.println(ex.getMessage());
+                //System.out.println("Данные по данному маршруту не найдены. Проверьте ввод или попробуйте ввести название города на английском.");
+            } //System.out.println("Не удалось получить данные с сервера. Проверьте правильность ввода города.");
+            catch (Exception ex) {
                 ex.printStackTrace();
             }
-            System.out.println("Введено городов " + inpCount);
+            System.out.println("Осталось ввести городов: " + (CITY_COUNT - inpCount));
         }
         System.out.println("\n*************************************\n");
         printResult(storage);
@@ -54,15 +54,17 @@ public class Main {
         Scanner inp = new Scanner(System.in);
         System.out.println(msg);
         System.out.print("\t> ");
-        return inp.nextLine();
+        String city = inp.nextLine();
+        log.info("Введен город: " + city);
+        return city;
     }
 
     private static void printResult(RedisStorage storage) {
         int rightBorder = storage.size() - 1;
         System.out.println("Самые дешевые поездки будут в эти города:");
-        System.out.println(resultFormat(storage.listKeys(0, OUTPUT_COUNT - 1)));
+        System.out.println(resultFormat(storage.listKeys(0, OUTPUT_COUNT)));
         System.out.println("Самые дорогие поездки будут в эти города:");
-        System.out.println(resultFormat(storage.listKeys(rightBorder - OUTPUT_COUNT, rightBorder)));
+        System.out.println(resultFormat(storage.listKeys(rightBorder - OUTPUT_COUNT , rightBorder)));
 
     }
 

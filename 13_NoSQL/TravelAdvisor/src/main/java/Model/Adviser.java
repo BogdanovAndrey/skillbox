@@ -33,6 +33,7 @@ public class Adviser {
     final String DEPART_DATE;
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(("yyyy-MM"));
 
+
     public Adviser(String originCityCode) throws IOException {
         Properties props = new Properties();
         props.load(Files.newInputStream(Path.of("src/main/resources/token.yml")));
@@ -41,12 +42,14 @@ public class Adviser {
         DEPART_DATE = LocalDate.now().format(formatter);
     }
 
-
     public Double getPrice(String destinationPoint) throws IOException {
         String destinationPointCode = CityCodeDB.getCityCode(destinationPoint);
         String request = cheapestTicketRequestBuilder(destinationPointCode);
-        log.debug(request);
+        log.info("Отправлен запрос");
+        log.info(request);
         JsonElement data = DataGrabber.getDataFromServer(request);
+        log.info("Получен ответ");
+        log.info(data.toString());
         TreeSet<Double> lowestPrice = parseResponse(data, destinationPointCode);
         return lowestPrice.first();
     }
@@ -55,12 +58,10 @@ public class Adviser {
         TreeSet<Double> tickets = new TreeSet<>();
         JsonObject response = data.getAsJsonObject();
         if (response.get("success").getAsString().equals("true")) {
-
-
             JsonElement uncheckedResultList = response.get("data").getAsJsonObject()  //Получили набор направлений
                     .get(destinationPointCode);
-            if (uncheckedResultList.isJsonNull()) {
-                throw new IllegalArgumentException();
+            if (uncheckedResultList == null) {
+                throw new IllegalArgumentException("Данные по данному маршруту не найдены. Проверьте ввод или попробуйте ввести название города на английском.");
             }
             JsonObject resultList = uncheckedResultList.getAsJsonObject();
             for (String s : resultList.getAsJsonObject().keySet()) {

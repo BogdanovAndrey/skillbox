@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Properties>
+        <Property name="APP_LOG_ROOT">target</Property>
+    </Properties>
+    <Appenders>
+
+        # Info File appender
+        <RollingFile name="infoLogger" fileName="${APP_LOG_ROOT}/info.log"
+                     filePattern="${APP_LOG_ROOT}/info-%d{yyyy-MM-dd}.log">
+
+            <PatternLayout>
+                <pattern>%d{yyy-MM-dd HH:mm:ss} [%t] %level %logger: %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+
+        # Error File appender
+        <RollingFile name="errLogger" fileName="${APP_LOG_ROOT}/err.log"
+                     filePattern="${APP_LOG_ROOT}/err-%d{yyyy-MM-dd}.log">
+
+            <PatternLayout>
+                <pattern>%d{yyy-MM-dd HH:mm:ss} [%t] %level %logger: %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <root level="DEBUG">
+            <AppenderRef ref="errLogger"/>
+        </root>
+        # Override log level for specified package
+        <Logger name="Main" level="INFO">
+            <AppenderRef ref="infoLogger"/>
+             </Logger>
+
+        <Logger name="Model.Adviser" level="INFO">
+            <AppenderRef ref="infoLogger"/>
+        </Logger>
+        <Logger name="Model.util.CityCodeDB" level="INFO">
+            <AppenderRef ref="infoLogger"/>
+        </Logger>
+    </Loggers>
+</Configuration>
