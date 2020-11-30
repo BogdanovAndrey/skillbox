@@ -16,7 +16,7 @@ public class RedisStorage {
     // Объект для работы с Redis
     private RedissonClient redisson;
     // Объект для работы с ключами
-    private RKeys rKeys;
+    private final RKeys rKeys;
     // Объект для работы с Sorted Set'ом
     private final RScoredSortedSet<String> citiesList;
 

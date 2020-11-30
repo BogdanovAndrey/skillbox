@@ -17,13 +17,16 @@ public class Main {
         int inpCount = 0;
         String origin = null;
 
-        Process p = Runtime.getRuntime().exec("docker run --rm --name skill-redis -p 127.0.0.1:6379:6379/tcp -d redis");
+        Runtime.getRuntime().exec("docker run --rm --name skill-redis -p 127.0.0.1:6379:6379/tcp -d redis");
         Thread.sleep(1000);
         final RedisStorage storage = new RedisStorage();
 
+        System.out.println("Добро пожаловать в TripAdviser.\n\nВведите 10 городов, в которые Вы хотели бы отправиться,\n" +
+                "и Я покажу цену трех самых дорогих и трех самых дешевых маршрутов.\nP.S. Название города можно вводить на " +
+                "русском и английском языке.\n");
         while (origin == null) {
             try {
-                origin = CityCodeDB.getCityCode(getCityFromUser("Введите название города отправления"));
+                origin = CityCodeDB.getCityCode(getCityFromUser("\tВведите название города отправления"));
                 adviser = new Adviser(origin);
             } catch (IllegalArgumentException ex) {
                 System.out.println(ex.getMessage());
@@ -32,7 +35,7 @@ public class Main {
 
         while (inpCount < CITY_COUNT) {
             try {
-                String city = getCityFromUser("Введите название города");
+                String city = getCityFromUser("\tВведите название города");
                 storage.storeRoute(city, adviser.getPrice(city));
                 inpCount++;
             } catch (IllegalArgumentException | IOException ex) {
@@ -42,11 +45,12 @@ public class Main {
             catch (Exception ex) {
                 ex.printStackTrace();
             }
-            System.out.println("Осталось ввести городов: " + (CITY_COUNT - inpCount));
+            System.out.println("\tОсталось ввести городов: " + (CITY_COUNT - inpCount));
         }
         System.out.println("\n*************************************\n");
         printResult(storage);
         storage.shutdown();
+        Runtime.getRuntime().exec("docker kill skill-redis");
     }
 
 

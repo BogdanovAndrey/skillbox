@@ -9,7 +9,6 @@
       <change beforePath="$PROJECT_DIR$/../../13_NoSQL/TravelAdvisor/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../13_NoSQL/TravelAdvisor/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../13_NoSQL/TravelAdvisor/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../13_NoSQL/TravelAdvisor/src/main/java/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../13_NoSQL/TravelAdvisor/src/main/java/Model/Adviser.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../13_NoSQL/TravelAdvisor/src/main/java/Model/Adviser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../13_NoSQL/TravelAdvisor/src/test/java/MainTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../13_NoSQL/TravelAdvisor/src/test/java/StorageTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

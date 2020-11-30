@@ -27,7 +27,7 @@ public class Adviser {
     // return_date=2017-12&
     // token=РазместитеЗдесьВашТокен
 
-    final String HOST = "http://api.travelpayouts.com/v1/prices/direct?";
+
     final String TOKEN;
     final String ORIGIN;
     final String DEPART_DATE;
@@ -73,7 +73,8 @@ public class Adviser {
         return tickets;
     }
 
-    private String cheapestTicketRequestBuilder(String destinationPointCode) throws IOException {
+    private String directFlightTicketRequestBuilder(String destinationPointCode) {
+        final String HOST = "http://api.travelpayouts.com/v1/prices/direct?";
         return HOST +
                 "origin=" +
                 ORIGIN +
@@ -83,6 +84,23 @@ public class Adviser {
                 "&" +
                 "depart_date=" +
                 DEPART_DATE +
+                "&" +
+                "token=" +
+                TOKEN;
+    }
+
+
+    private String cheapestTicketRequestBuilder(String destinationPointCode) {
+        final String HOST = "http://api.travelpayouts.com/v1/prices/cheap?";
+        return HOST +
+                "origin=" +
+                ORIGIN +
+                "&" +
+                "destination=" +
+                destinationPointCode +
+                //"&" +
+                //"depart_date=" +
+                //DEPART_DATE +
                 "&" +
                 "token=" +
                 TOKEN;
